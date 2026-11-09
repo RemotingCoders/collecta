@@ -426,3 +426,9 @@ FodyWeavers.xsd
 
 # Official VS Code C# Dev Kit Extension exclusion
 #*.lscache
+
+# Collecta: local secrets (PayPal credentials). Never commit these.
+.env
+.env.*
+!.env.example
+*.secret

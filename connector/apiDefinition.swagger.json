@@ -1,0 +1,3099 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Collecta PayPal Sandbox",
+        "description": "Collecta lets a collections agent work with the PayPal sandbox: create, send, remind and cancel invoices, create and capture checkout orders, send payouts and list account transactions to reconcile payments.",
+        "version": "1.0.0",
+        "contact": {
+            "name": "Damian Sinay",
+            "url": "https://github.com/RemotingCoders/collecta"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "host": "api-m.sandbox.paypal.com",
+    "basePath": "/",
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/v2/invoicing/generate-next-invoice-number": {
+            "post": {
+                "operationId": "GenerateNextInvoiceNumber",
+                "summary": "Generate next invoice number",
+                "description": "Returns the next sequential invoice number for the PayPal account. The number can be used as the invoice number when a draft invoice is created.",
+                "tags": [
+                    "Invoicing"
+                ],
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The next invoice number.",
+                        "schema": {
+                            "$ref": "#/definitions/InvoiceNumber"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v2/invoicing/invoices": {
+            "get": {
+                "operationId": "ListInvoices",
+                "summary": "List invoices",
+                "description": "Lists the invoices of the PayPal account, newest first, one page at a time. Search invoices is the better choice to filter by status, customer email, dates or amounts.",
+                "tags": [
+                    "Invoicing"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/Page"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSize"
+                    },
+                    {
+                        "$ref": "#/parameters/TotalRequired"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A page of invoices.",
+                        "schema": {
+                            "$ref": "#/definitions/InvoiceList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            },
+            "post": {
+                "operationId": "CreateDraftInvoice",
+                "summary": "Create draft invoice",
+                "description": "Creates an invoice in DRAFT status for a customer, with at least one line item, a currency and payment terms. The customer is not notified until the draft is sent with Send invoice. Returns the invoice ID, status and the link the customer uses to pay.",
+                "tags": [
+                    "Invoicing"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "x-ms-summary": "Invoice",
+                        "description": "The invoice to create.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/InvoiceDraft"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "The draft invoice that was created.",
+                        "schema": {
+                            "$ref": "#/definitions/Invoice"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v2/invoicing/invoices/{invoice_id}": {
+            "get": {
+                "operationId": "GetInvoice",
+                "summary": "Get invoice",
+                "description": "Gets the full details of one invoice by its ID, including its status, amount due, amount paid, due date and the link the customer uses to pay. Useful to check whether an invoice has been paid.",
+                "tags": [
+                    "Invoicing"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/InvoiceId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The invoice.",
+                        "schema": {
+                            "$ref": "#/definitions/Invoice"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v2/invoicing/invoices/{invoice_id}/send": {
+            "post": {
+                "operationId": "SendInvoice",
+                "summary": "Send invoice",
+                "description": "Sends a draft invoice to the customer. PayPal emails the customer a link to view and pay the invoice, and the invoice status changes from DRAFT to SENT. An invoice dated in the future is scheduled and sent on its invoice date.",
+                "tags": [
+                    "Invoicing"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/InvoiceId"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "x-ms-summary": "Send Options",
+                        "description": "Options for the email PayPal sends to the customer.",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/InvoiceNotification"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The invoice was sent. A link to the invoice is returned.",
+                        "schema": {
+                            "$ref": "#/definitions/Link"
+                        }
+                    },
+                    "202": {
+                        "description": "The invoice is scheduled and will be sent on its invoice date."
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v2/invoicing/invoices/{invoice_id}/remind": {
+            "post": {
+                "operationId": "RemindInvoice",
+                "summary": "Send invoice reminder",
+                "description": "Emails a payment reminder to the customer for an invoice that was sent and is still unpaid or partially paid. This is the collections follow-up action for overdue invoices. It does not work on draft, paid or cancelled invoices. PayPal allows only 2 reminders in a day.",
+                "tags": [
+                    "Invoicing"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/InvoiceId"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "x-ms-summary": "Reminder Options",
+                        "description": "Options for the reminder email PayPal sends to the customer.",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/InvoiceNotification"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The reminder was sent. No content is returned."
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v2/invoicing/invoices/{invoice_id}/cancel": {
+            "post": {
+                "operationId": "CancelInvoice",
+                "summary": "Cancel invoice",
+                "description": "Cancels an invoice that was sent, so the customer can no longer pay it, and optionally emails a cancellation notice. This cannot be undone. It does not work on draft invoices or fully paid invoices.",
+                "tags": [
+                    "Invoicing"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/InvoiceId"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "x-ms-summary": "Cancellation Options",
+                        "description": "Options for the cancellation email PayPal sends to the customer.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/InvoiceNotification"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The invoice was cancelled. No content is returned."
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v2/invoicing/search-invoices": {
+            "post": {
+                "operationId": "SearchInvoices",
+                "summary": "Search invoices",
+                "description": "Searches the invoices of the PayPal account by status, customer email, invoice number, invoice date, due date, payment date or total amount. This is the action to find the unpaid or overdue invoices of a customer.",
+                "tags": [
+                    "Invoicing"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/Page"
+                    },
+                    {
+                        "$ref": "#/parameters/PageSize"
+                    },
+                    {
+                        "$ref": "#/parameters/TotalRequired"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "x-ms-summary": "Search Criteria",
+                        "description": "The criteria used to search invoices.",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/InvoiceSearch"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A page of invoices that match the search criteria.",
+                        "schema": {
+                            "$ref": "#/definitions/InvoiceList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v2/checkout/orders": {
+            "post": {
+                "operationId": "CreateOrder",
+                "summary": "Create order",
+                "description": "Creates a PayPal checkout order for a one-time payment of a given amount. The response contains a link with relation approve or payer-action, which is the payment page to send to the customer. The customer has 6 hours to open it. After the customer approves, the payment is collected with Capture order.",
+                "tags": [
+                    "Orders"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/PayPalRequestId"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "x-ms-summary": "Order",
+                        "description": "The order to create.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/OrderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "The order that was created.",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v2/checkout/orders/{id}": {
+            "get": {
+                "operationId": "GetOrder",
+                "summary": "Get order",
+                "description": "Gets the details of a checkout order by its ID, including its status, payer, amounts and captured payments. Useful to check whether the customer approved (status APPROVED) or the payment completed (status COMPLETED).",
+                "tags": [
+                    "Orders"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/OrderId"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The order.",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v2/checkout/orders/{id}/capture": {
+            "post": {
+                "operationId": "CaptureOrder",
+                "summary": "Capture order",
+                "description": "Captures the payment of a checkout order that the customer has approved, which moves the money to the merchant account. Fails with ORDER_NOT_APPROVED when the customer has not approved the order yet.",
+                "tags": [
+                    "Orders"
+                ],
+                "parameters": [
+                    {
+                        "$ref": "#/parameters/OrderId"
+                    },
+                    {
+                        "$ref": "#/parameters/PayPalRequestId"
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "The order with the captured payment.",
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v1/payments/payouts": {
+            "post": {
+                "operationId": "CreatePayout",
+                "summary": "Create payout",
+                "description": "Sends money from the PayPal account to one or more recipients identified by email address, phone number or PayPal ID, for example to pay a refund, rebate or commission. The payout is processed asynchronously and its result is read with Get payout batch.",
+                "tags": [
+                    "Payouts"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "x-ms-summary": "Payout",
+                        "description": "The batch payout to create.",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/PayoutRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "The payout batch that was created.",
+                        "schema": {
+                            "$ref": "#/definitions/PayoutCreated"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v1/payments/payouts/{payout_batch_id}": {
+            "get": {
+                "operationId": "GetPayoutBatch",
+                "summary": "Get payout batch",
+                "description": "Gets the status of a payout batch and of each payment in it, including amounts, fees and errors. Useful to confirm that a payout created with Create payout succeeded.",
+                "tags": [
+                    "Payouts"
+                ],
+                "parameters": [
+                    {
+                        "name": "payout_batch_id",
+                        "in": "path",
+                        "x-ms-summary": "Payout Batch ID",
+                        "description": "The PayPal ID of the payout batch, as returned by Create payout.",
+                        "required": true,
+                        "type": "string",
+                        "x-ms-url-encoding": "single"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "x-ms-summary": "Page",
+                        "description": "The page number of payout items to return, starting at 1.",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32",
+                        "default": 1,
+                        "x-ms-visibility": "advanced"
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "x-ms-summary": "Page Size",
+                        "description": "The number of payout items to return per page, from 1 to 1000.",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32",
+                        "default": 1000,
+                        "x-ms-visibility": "advanced"
+                    },
+                    {
+                        "name": "total_required",
+                        "in": "query",
+                        "x-ms-summary": "Show Totals",
+                        "description": "Whether to return the total number of items and pages in the response.",
+                        "required": false,
+                        "type": "boolean",
+                        "default": true,
+                        "x-ms-visibility": "advanced"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The payout batch and its items.",
+                        "schema": {
+                            "$ref": "#/definitions/PayoutBatch"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        },
+        "/v1/reporting/transactions": {
+            "get": {
+                "operationId": "ListTransactions",
+                "summary": "List transactions",
+                "description": "Lists the balance transactions of the PayPal account, such as payments received, refunds, fees and payouts, within a date range of at most 31 days. Useful to reconcile payments received against invoices. New transactions can take a few hours to appear.",
+                "tags": [
+                    "Reporting"
+                ],
+                "parameters": [
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "x-ms-summary": "Start Date",
+                        "description": "The start of the date range as a date and time with seconds and a time zone (Z or an offset such as -07:00), for example 2026-01-01T00:00:00Z.",
+                        "required": true,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "x-ms-summary": "End Date",
+                        "description": "The end of the date range as a date and time with seconds and a time zone, for example 2026-01-31T23:59:59Z. At most 31 days after the start date.",
+                        "required": true,
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    {
+                        "name": "fields",
+                        "in": "query",
+                        "x-ms-summary": "Fields",
+                        "description": "The transaction details to include in the response. Always all, because PayPal returns only the transaction info by default.",
+                        "required": true,
+                        "type": "string",
+                        "default": "all",
+                        "x-ms-visibility": "internal"
+                    },
+                    {
+                        "name": "transaction_id",
+                        "in": "query",
+                        "x-ms-summary": "Transaction ID",
+                        "description": "Returns only transactions with this PayPal transaction ID, which is 17 characters long (19 for an order ID). Two transactions can share an ID.",
+                        "required": false,
+                        "type": "string",
+                        "minLength": 17,
+                        "maxLength": 19,
+                        "x-ms-visibility": "advanced"
+                    },
+                    {
+                        "name": "transaction_type",
+                        "in": "query",
+                        "x-ms-summary": "Transaction Event Code",
+                        "description": "Returns only transactions with this PayPal transaction event code, for example T0006 for a checkout payment or T0007 for a website payment.",
+                        "required": false,
+                        "type": "string",
+                        "x-ms-visibility": "advanced"
+                    },
+                    {
+                        "name": "transaction_amount",
+                        "in": "query",
+                        "x-ms-summary": "Transaction Amount Range",
+                        "description": "Returns only transactions whose gross amount is in this range, written in minor units as LOW TO HIGH. For example 500 TO 1005 finds amounts from 5.00 to 10.05.",
+                        "required": false,
+                        "type": "string",
+                        "x-ms-visibility": "advanced"
+                    },
+                    {
+                        "name": "transaction_currency",
+                        "in": "query",
+                        "x-ms-summary": "Transaction Currency",
+                        "description": "Returns only transactions in this three-character ISO-4217 currency code, for example USD.",
+                        "required": false,
+                        "type": "string",
+                        "x-ms-visibility": "advanced"
+                    },
+                    {
+                        "name": "balance_affecting_records_only",
+                        "in": "query",
+                        "x-ms-summary": "Balance Affecting Only",
+                        "description": "Y returns only transactions that change the account balance, which is the default. N returns all transactions.",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "Y",
+                            "N"
+                        ],
+                        "default": "Y",
+                        "x-ms-visibility": "advanced"
+                    },
+                    {
+                        "name": "transaction_status",
+                        "in": "query",
+                        "x-ms-summary": "Transaction Status",
+                        "description": "Returns only transactions with this status code: S for success, P for pending, D for denied or V for reversed.",
+                        "required": false,
+                        "type": "string",
+                        "enum": [
+                            "D",
+                            "P",
+                            "S",
+                            "V"
+                        ],
+                        "x-ms-visibility": "advanced"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "x-ms-summary": "Page",
+                        "description": "The page number to return, starting at 1.",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32",
+                        "default": 1,
+                        "x-ms-visibility": "advanced"
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "x-ms-summary": "Page Size",
+                        "description": "The number of transactions to return per page, from 1 to 500.",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int32",
+                        "default": 100,
+                        "minimum": 1,
+                        "maximum": 500,
+                        "x-ms-visibility": "advanced"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "A page of transactions.",
+                        "schema": {
+                            "$ref": "#/definitions/TransactionList"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request. The request is malformed or failed validation; the PayPal error body explains the issue."
+                    },
+                    "401": {
+                        "description": "Unauthorized. The Client ID or Secret of the connection is not valid for the PayPal sandbox."
+                    },
+                    "403": {
+                        "description": "Forbidden. The PayPal REST app does not have permission for this feature."
+                    },
+                    "404": {
+                        "description": "Not found. The requested resource does not exist."
+                    },
+                    "422": {
+                        "description": "Unprocessable entity. The request is well formed but the action cannot be performed in the current state."
+                    },
+                    "default": {
+                        "description": "Operation failed. The PayPal error body is returned unchanged."
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Link": {
+            "type": "object",
+            "x-ms-summary": "Link",
+            "description": "A HATEOAS link to a related resource or action.",
+            "properties": {
+                "href": {
+                    "type": "string",
+                    "x-ms-summary": "Link URL",
+                    "description": "The complete target URL of the link."
+                },
+                "rel": {
+                    "type": "string",
+                    "x-ms-summary": "Link Relation",
+                    "description": "The relation of the link to the resource, for example self, send, approve or payer-action."
+                },
+                "method": {
+                    "type": "string",
+                    "x-ms-summary": "Link Method",
+                    "description": "The HTTP method to use with the link, for example GET or POST."
+                }
+            }
+        },
+        "InvoiceNumber": {
+            "type": "object",
+            "x-ms-summary": "Invoice Number Result",
+            "description": "The next available invoice number.",
+            "properties": {
+                "invoice_number": {
+                    "type": "string",
+                    "x-ms-summary": "Invoice Number",
+                    "description": "The next sequential invoice number for the PayPal account, for example INV-0042."
+                }
+            }
+        },
+        "InvoiceDraft": {
+            "type": "object",
+            "x-ms-summary": "Invoice Draft",
+            "description": "The invoice to create as a draft.",
+            "required": [
+                "detail",
+                "items"
+            ],
+            "properties": {
+                "detail": {
+                    "type": "object",
+                    "x-ms-summary": "Invoice Detail",
+                    "description": "The general details of the invoice such as currency, number, date and payment terms.",
+                    "required": [
+                        "currency_code"
+                    ],
+                    "properties": {
+                        "currency_code": {
+                            "type": "string",
+                            "x-ms-summary": "Currency",
+                            "description": "The three-character ISO-4217 currency code of the invoice, for example USD."
+                        },
+                        "invoice_number": {
+                            "type": "string",
+                            "x-ms-summary": "Invoice Number",
+                            "description": "A unique invoice number. Leave empty to let PayPal assign the next number, or get one from Generate next invoice number."
+                        },
+                        "invoice_date": {
+                            "type": "string",
+                            "x-ms-summary": "Invoice Date",
+                            "description": "The invoice date in YYYY-MM-DD format. Defaults to today when empty.",
+                            "format": "date"
+                        },
+                        "payment_term": {
+                            "type": "object",
+                            "x-ms-summary": "Payment Term",
+                            "description": "The payment due terms of the invoice.",
+                            "properties": {
+                                "term_type": {
+                                    "type": "string",
+                                    "x-ms-summary": "Payment Term Type",
+                                    "description": "When the payment is due, for example NET_30 for 30 days after the invoice date.",
+                                    "enum": [
+                                        "DUE_ON_RECEIPT",
+                                        "DUE_ON_DATE_SPECIFIED",
+                                        "NET_10",
+                                        "NET_15",
+                                        "NET_30",
+                                        "NET_45",
+                                        "NET_60",
+                                        "NET_90",
+                                        "NO_DUE_DATE"
+                                    ]
+                                },
+                                "due_date": {
+                                    "type": "string",
+                                    "x-ms-summary": "Due Date",
+                                    "description": "The due date in YYYY-MM-DD format. Only used when the payment term type is DUE_ON_DATE_SPECIFIED.",
+                                    "format": "date",
+                                    "x-ms-visibility": "advanced"
+                                }
+                            }
+                        },
+                        "note": {
+                            "type": "string",
+                            "x-ms-summary": "Note To Recipient",
+                            "description": "A note to the customer that is shown on the invoice."
+                        },
+                        "memo": {
+                            "type": "string",
+                            "x-ms-summary": "Private Memo",
+                            "description": "A private bookkeeping memo for the invoicer. It is not shown to the customer.",
+                            "x-ms-visibility": "advanced"
+                        },
+                        "reference": {
+                            "type": "string",
+                            "x-ms-summary": "Reference",
+                            "description": "An external reference such as a purchase order number or the source record number in the ERP or CRM system.",
+                            "x-ms-visibility": "advanced"
+                        }
+                    }
+                },
+                "invoicer": {
+                    "type": "object",
+                    "x-ms-summary": "Invoicer",
+                    "description": "The business that issues the invoice. Leave empty to use the profile of the PayPal account.",
+                    "properties": {
+                        "name": {
+                            "type": "object",
+                            "x-ms-summary": "Invoicer Name",
+                            "description": "The first and last name of the invoicer.",
+                            "properties": {
+                                "given_name": {
+                                    "type": "string",
+                                    "x-ms-summary": "Invoicer First Name",
+                                    "description": "The first (given) name of the invoicer."
+                                },
+                                "surname": {
+                                    "type": "string",
+                                    "x-ms-summary": "Invoicer Last Name",
+                                    "description": "The last name (surname) of the invoicer."
+                                }
+                            }
+                        },
+                        "email_address": {
+                            "type": "string",
+                            "x-ms-summary": "Invoicer Email",
+                            "description": "The email address of the invoicer. It must be an email address registered on the PayPal business account."
+                        }
+                    }
+                },
+                "primary_recipients": {
+                    "type": "array",
+                    "x-ms-summary": "Recipients",
+                    "description": "The customers who are billed and receive the invoice. PayPal accepts a draft without a recipient, but a recipient with an email address is needed to email the invoice.",
+                    "items": {
+                        "type": "object",
+                        "x-ms-summary": "Recipient",
+                        "description": "A customer who is billed by the invoice.",
+                        "properties": {
+                            "billing_info": {
+                                "type": "object",
+                                "x-ms-summary": "Billing Info",
+                                "description": "The billing information of the customer.",
+                                "properties": {
+                                    "name": {
+                                        "type": "object",
+                                        "x-ms-summary": "Recipient Name",
+                                        "description": "The first and last name of the recipient.",
+                                        "properties": {
+                                            "given_name": {
+                                                "type": "string",
+                                                "x-ms-summary": "Recipient First Name",
+                                                "description": "The first (given) name of the recipient."
+                                            },
+                                            "surname": {
+                                                "type": "string",
+                                                "x-ms-summary": "Recipient Last Name",
+                                                "description": "The last name (surname) of the recipient."
+                                            }
+                                        }
+                                    },
+                                    "email_address": {
+                                        "type": "string",
+                                        "x-ms-summary": "Recipient Email",
+                                        "description": "The email address of the customer. The invoice is emailed to this address when it is sent."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "items": {
+                    "type": "array",
+                    "x-ms-summary": "Line Items",
+                    "description": "The products or services that are billed on the invoice.",
+                    "items": {
+                        "type": "object",
+                        "x-ms-summary": "Line Item",
+                        "description": "A product or service that is billed on the invoice.",
+                        "required": [
+                            "name",
+                            "quantity",
+                            "unit_amount"
+                        ],
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "x-ms-summary": "Item Name",
+                                "description": "The name of the product or service."
+                            },
+                            "description": {
+                                "type": "string",
+                                "x-ms-summary": "Item Description",
+                                "description": "A description of the product or service."
+                            },
+                            "quantity": {
+                                "type": "string",
+                                "x-ms-summary": "Item Quantity",
+                                "description": "The quantity as a decimal string, for example 1 or 2.5. Up to five decimal places."
+                            },
+                            "unit_amount": {
+                                "type": "object",
+                                "x-ms-summary": "Unit Price",
+                                "description": "The price of one unit of the item.",
+                                "required": [
+                                    "currency_code",
+                                    "value"
+                                ],
+                                "properties": {
+                                    "currency_code": {
+                                        "type": "string",
+                                        "x-ms-summary": "Unit Price Currency",
+                                        "description": "The three-character ISO-4217 currency code, for example USD."
+                                    },
+                                    "value": {
+                                        "type": "string",
+                                        "x-ms-summary": "Unit Price Value",
+                                        "description": "The amount as a decimal string, for example 150.00."
+                                    }
+                                }
+                            },
+                            "unit_of_measure": {
+                                "type": "string",
+                                "x-ms-summary": "Unit Of Measure",
+                                "description": "How the quantity is measured: QUANTITY for goods, HOURS for hourly services or AMOUNT for a flat amount.",
+                                "enum": [
+                                    "QUANTITY",
+                                    "HOURS",
+                                    "AMOUNT"
+                                ],
+                                "x-ms-visibility": "advanced"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Invoice": {
+            "type": "object",
+            "x-ms-summary": "Invoice",
+            "description": "A PayPal invoice.",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "x-ms-summary": "Invoice ID",
+                    "description": "The PayPal ID of the invoice, for example INV2-ABCD-1234-EFGH-5678. Use it in the other invoice actions."
+                },
+                "status": {
+                    "type": "string",
+                    "x-ms-summary": "Invoice Status",
+                    "description": "The invoice status: DRAFT, SENT, SCHEDULED, PAID, MARKED_AS_PAID, CANCELLED, REFUNDED, PARTIALLY_PAID, PARTIALLY_REFUNDED, MARKED_AS_REFUNDED, UNPAID, PAYMENT_PENDING, AUTO_CANCELLED, PAID_EXTERNAL, REFUNDED_EXTERNAL or SHARED."
+                },
+                "detail": {
+                    "type": "object",
+                    "x-ms-summary": "Invoice Detail",
+                    "description": "The general details of the invoice.",
+                    "properties": {
+                        "invoice_number": {
+                            "type": "string",
+                            "x-ms-summary": "Invoice Number",
+                            "description": "The invoice number shown to the customer."
+                        },
+                        "reference": {
+                            "type": "string",
+                            "x-ms-summary": "Reference",
+                            "description": "The external reference of the invoice, such as a purchase order number."
+                        },
+                        "invoice_date": {
+                            "type": "string",
+                            "x-ms-summary": "Invoice Date",
+                            "description": "The invoice date in YYYY-MM-DD format."
+                        },
+                        "currency_code": {
+                            "type": "string",
+                            "x-ms-summary": "Currency",
+                            "description": "The three-character ISO-4217 currency code of the invoice."
+                        },
+                        "note": {
+                            "type": "string",
+                            "x-ms-summary": "Note To Recipient",
+                            "description": "The note to the customer shown on the invoice."
+                        },
+                        "memo": {
+                            "type": "string",
+                            "x-ms-summary": "Private Memo",
+                            "description": "The private bookkeeping memo of the invoicer."
+                        },
+                        "payment_term": {
+                            "type": "object",
+                            "x-ms-summary": "Payment Term",
+                            "description": "The payment due terms of the invoice.",
+                            "properties": {
+                                "term_type": {
+                                    "type": "string",
+                                    "x-ms-summary": "Payment Term Type",
+                                    "description": "The payment term type, for example NET_30 or DUE_ON_RECEIPT."
+                                },
+                                "due_date": {
+                                    "type": "string",
+                                    "x-ms-summary": "Due Date",
+                                    "description": "The date the payment is due, in YYYY-MM-DD format."
+                                }
+                            }
+                        },
+                        "metadata": {
+                            "type": "object",
+                            "x-ms-summary": "Invoice Metadata",
+                            "description": "Audit information and the web links of the invoice.",
+                            "properties": {
+                                "create_time": {
+                                    "type": "string",
+                                    "x-ms-summary": "Created Time",
+                                    "description": "The date and time the invoice was created."
+                                },
+                                "last_update_time": {
+                                    "type": "string",
+                                    "x-ms-summary": "Last Updated Time",
+                                    "description": "The date and time the invoice was last updated."
+                                },
+                                "first_sent_time": {
+                                    "type": "string",
+                                    "x-ms-summary": "First Sent Time",
+                                    "description": "The date and time the invoice was first sent to the customer."
+                                },
+                                "last_sent_time": {
+                                    "type": "string",
+                                    "x-ms-summary": "Last Sent Time",
+                                    "description": "The date and time the invoice was last sent or reminded."
+                                },
+                                "cancel_time": {
+                                    "type": "string",
+                                    "x-ms-summary": "Cancelled Time",
+                                    "description": "The date and time the invoice was cancelled."
+                                },
+                                "recipient_view_url": {
+                                    "type": "string",
+                                    "x-ms-summary": "Customer Payment Link",
+                                    "description": "The web link the customer opens to view and pay the invoice. Share this link with the customer."
+                                },
+                                "invoicer_view_url": {
+                                    "type": "string",
+                                    "x-ms-summary": "Invoicer View Link",
+                                    "description": "The web link the invoicer opens to view the invoice in PayPal."
+                                }
+                            }
+                        }
+                    }
+                },
+                "invoicer": {
+                    "type": "object",
+                    "x-ms-summary": "Invoicer",
+                    "description": "The business that issued the invoice.",
+                    "properties": {
+                        "name": {
+                            "type": "object",
+                            "x-ms-summary": "Invoicer Name",
+                            "description": "The first and last name of the invoicer.",
+                            "properties": {
+                                "given_name": {
+                                    "type": "string",
+                                    "x-ms-summary": "Invoicer First Name",
+                                    "description": "The first (given) name of the invoicer."
+                                },
+                                "surname": {
+                                    "type": "string",
+                                    "x-ms-summary": "Invoicer Last Name",
+                                    "description": "The last name (surname) of the invoicer."
+                                }
+                            }
+                        },
+                        "email_address": {
+                            "type": "string",
+                            "x-ms-summary": "Invoicer Email",
+                            "description": "The email address of the invoicer."
+                        },
+                        "business_name": {
+                            "type": "string",
+                            "x-ms-summary": "Invoicer Business Name",
+                            "description": "The business name of the invoicer."
+                        }
+                    }
+                },
+                "primary_recipients": {
+                    "type": "array",
+                    "x-ms-summary": "Recipients",
+                    "description": "The customers who are billed by the invoice.",
+                    "items": {
+                        "type": "object",
+                        "x-ms-summary": "Recipient",
+                        "description": "A customer who is billed by the invoice.",
+                        "properties": {
+                            "billing_info": {
+                                "type": "object",
+                                "x-ms-summary": "Billing Info",
+                                "description": "The billing information of the customer.",
+                                "properties": {
+                                    "name": {
+                                        "type": "object",
+                                        "x-ms-summary": "Recipient Name",
+                                        "description": "The first and last name of the recipient.",
+                                        "properties": {
+                                            "given_name": {
+                                                "type": "string",
+                                                "x-ms-summary": "Recipient First Name",
+                                                "description": "The first (given) name of the recipient."
+                                            },
+                                            "surname": {
+                                                "type": "string",
+                                                "x-ms-summary": "Recipient Last Name",
+                                                "description": "The last name (surname) of the recipient."
+                                            }
+                                        }
+                                    },
+                                    "email_address": {
+                                        "type": "string",
+                                        "x-ms-summary": "Recipient Email",
+                                        "description": "The email address of the customer."
+                                    },
+                                    "business_name": {
+                                        "type": "string",
+                                        "x-ms-summary": "Recipient Business Name",
+                                        "description": "The business name of the customer."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "items": {
+                    "type": "array",
+                    "x-ms-summary": "Line Items",
+                    "description": "The products or services billed on the invoice.",
+                    "items": {
+                        "type": "object",
+                        "x-ms-summary": "Line Item",
+                        "description": "A product or service billed on the invoice.",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "x-ms-summary": "Item ID",
+                                "description": "The PayPal ID of the line item."
+                            },
+                            "name": {
+                                "type": "string",
+                                "x-ms-summary": "Item Name",
+                                "description": "The name of the product or service."
+                            },
+                            "description": {
+                                "type": "string",
+                                "x-ms-summary": "Item Description",
+                                "description": "The description of the product or service."
+                            },
+                            "quantity": {
+                                "type": "string",
+                                "x-ms-summary": "Item Quantity",
+                                "description": "The quantity of the item as a decimal string."
+                            },
+                            "unit_amount": {
+                                "type": "object",
+                                "x-ms-summary": "Unit Price",
+                                "description": "The price of one unit of the item.",
+                                "properties": {
+                                    "currency_code": {
+                                        "type": "string",
+                                        "x-ms-summary": "Unit Price Currency",
+                                        "description": "The three-character ISO-4217 currency code, for example USD."
+                                    },
+                                    "value": {
+                                        "type": "string",
+                                        "x-ms-summary": "Unit Price Value",
+                                        "description": "The amount as a decimal string, for example 150.00."
+                                    }
+                                }
+                            },
+                            "unit_of_measure": {
+                                "type": "string",
+                                "x-ms-summary": "Unit Of Measure",
+                                "description": "How the quantity is measured: QUANTITY, HOURS or AMOUNT."
+                            }
+                        }
+                    }
+                },
+                "amount": {
+                    "type": "object",
+                    "x-ms-summary": "Invoice Total",
+                    "description": "The total amount of the invoice.",
+                    "properties": {
+                        "currency_code": {
+                            "type": "string",
+                            "x-ms-summary": "Invoice Total Currency",
+                            "description": "The three-character ISO-4217 currency code, for example USD."
+                        },
+                        "value": {
+                            "type": "string",
+                            "x-ms-summary": "Invoice Total Value",
+                            "description": "The amount as a decimal string, for example 150.00."
+                        }
+                    }
+                },
+                "due_amount": {
+                    "type": "object",
+                    "x-ms-summary": "Amount Due",
+                    "description": "The amount that is still unpaid on the invoice.",
+                    "properties": {
+                        "currency_code": {
+                            "type": "string",
+                            "x-ms-summary": "Amount Due Currency",
+                            "description": "The three-character ISO-4217 currency code, for example USD."
+                        },
+                        "value": {
+                            "type": "string",
+                            "x-ms-summary": "Amount Due Value",
+                            "description": "The amount as a decimal string, for example 150.00."
+                        }
+                    }
+                },
+                "payments": {
+                    "type": "object",
+                    "x-ms-summary": "Payments",
+                    "description": "The payments recorded against the invoice.",
+                    "properties": {
+                        "paid_amount": {
+                            "type": "object",
+                            "x-ms-summary": "Amount Paid",
+                            "description": "The total amount paid on the invoice so far.",
+                            "properties": {
+                                "currency_code": {
+                                    "type": "string",
+                                    "x-ms-summary": "Amount Paid Currency",
+                                    "description": "The three-character ISO-4217 currency code, for example USD."
+                                },
+                                "value": {
+                                    "type": "string",
+                                    "x-ms-summary": "Amount Paid Value",
+                                    "description": "The amount as a decimal string, for example 150.00."
+                                }
+                            }
+                        },
+                        "transactions": {
+                            "type": "array",
+                            "x-ms-summary": "Payment Transactions",
+                            "description": "The individual payments recorded against the invoice.",
+                            "items": {
+                                "type": "object",
+                                "x-ms-summary": "Payment Transaction",
+                                "description": "A payment recorded against the invoice.",
+                                "properties": {
+                                    "payment_id": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payment ID",
+                                        "description": "The PayPal transaction ID of the payment. Present for payments made through PayPal."
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payment Type",
+                                        "description": "PAYPAL for a payment made through PayPal, or EXTERNAL for a payment such as cash or check that was recorded by hand."
+                                    },
+                                    "payment_date": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payment Date",
+                                        "description": "The date of the payment in YYYY-MM-DD format."
+                                    },
+                                    "method": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payment Method",
+                                        "description": "How the payment was made: BANK_TRANSFER, CASH, CHECK, CREDIT_CARD, DEBIT_CARD, PAYPAL, WIRE_TRANSFER or OTHER."
+                                    },
+                                    "amount": {
+                                        "type": "object",
+                                        "x-ms-summary": "Payment Amount",
+                                        "description": "The amount of the payment.",
+                                        "properties": {
+                                            "currency_code": {
+                                                "type": "string",
+                                                "x-ms-summary": "Payment Amount Currency",
+                                                "description": "The three-character ISO-4217 currency code, for example USD."
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "x-ms-summary": "Payment Amount Value",
+                                                "description": "The amount as a decimal string, for example 150.00."
+                                            }
+                                        }
+                                    },
+                                    "note": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payment Note",
+                                        "description": "A note recorded with an external payment."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "refunds": {
+                    "type": "object",
+                    "x-ms-summary": "Refunds",
+                    "description": "The refunds recorded against the invoice.",
+                    "properties": {
+                        "refund_amount": {
+                            "type": "object",
+                            "x-ms-summary": "Amount Refunded",
+                            "description": "The total amount refunded on the invoice so far.",
+                            "properties": {
+                                "currency_code": {
+                                    "type": "string",
+                                    "x-ms-summary": "Amount Refunded Currency",
+                                    "description": "The three-character ISO-4217 currency code, for example USD."
+                                },
+                                "value": {
+                                    "type": "string",
+                                    "x-ms-summary": "Amount Refunded Value",
+                                    "description": "The amount as a decimal string, for example 150.00."
+                                }
+                            }
+                        }
+                    }
+                },
+                "links": {
+                    "type": "array",
+                    "x-ms-summary": "Links",
+                    "description": "The HATEOAS links of the invoice, such as self, send, replace, delete and record-payment.",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "InvoiceList": {
+            "type": "object",
+            "x-ms-summary": "Invoice List",
+            "description": "A page of invoices.",
+            "properties": {
+                "total_items": {
+                    "type": "integer",
+                    "x-ms-summary": "Total Items",
+                    "description": "The total number of invoices that match. Only returned when Show Totals is true.",
+                    "format": "int32"
+                },
+                "total_pages": {
+                    "type": "integer",
+                    "x-ms-summary": "Total Pages",
+                    "description": "The total number of pages. Only returned when Show Totals is true.",
+                    "format": "int32"
+                },
+                "items": {
+                    "type": "array",
+                    "x-ms-summary": "Invoices",
+                    "description": "The invoices on this page.",
+                    "items": {
+                        "$ref": "#/definitions/Invoice"
+                    }
+                },
+                "links": {
+                    "type": "array",
+                    "x-ms-summary": "Links",
+                    "description": "The HATEOAS links for paging, such as self, next and last.",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "InvoiceNotification": {
+            "type": "object",
+            "x-ms-summary": "Notification Options",
+            "description": "Options for the email notification that PayPal sends for the invoice.",
+            "properties": {
+                "send_to_recipient": {
+                    "type": "boolean",
+                    "x-ms-summary": "Email The Customer",
+                    "description": "Whether PayPal emails the notification to the customer. Defaults to true. With false, nothing is emailed and the customer payment link of the invoice can be shared through another channel."
+                },
+                "send_to_invoicer": {
+                    "type": "boolean",
+                    "x-ms-summary": "Email The Invoicer",
+                    "description": "Whether PayPal also emails a copy of the notification to the invoicer. Defaults to false."
+                },
+                "subject": {
+                    "type": "string",
+                    "x-ms-summary": "Email Subject",
+                    "description": "The subject of the notification email. PayPal currently ignores a supplied value and always uses its own standard subject.",
+                    "x-ms-visibility": "advanced"
+                },
+                "note": {
+                    "type": "string",
+                    "x-ms-summary": "Email Note",
+                    "description": "A note to the customer. PayPal currently ignores a supplied value and always uses its own standard text.",
+                    "x-ms-visibility": "advanced"
+                },
+                "additional_recipients": {
+                    "type": "array",
+                    "x-ms-summary": "Additional Recipients",
+                    "description": "CC email addresses that receive a copy. Only addresses already listed as additional recipients of the invoice are valid. When empty, all of them are notified.",
+                    "items": {
+                        "type": "string",
+                        "x-ms-summary": "Additional Recipient Email",
+                        "description": "An email address that receives a copy of the notification."
+                    },
+                    "x-ms-visibility": "advanced"
+                }
+            }
+        },
+        "InvoiceSearch": {
+            "type": "object",
+            "x-ms-summary": "Invoice Search",
+            "description": "The criteria used to search invoices. All criteria are optional and are combined with AND.",
+            "properties": {
+                "status": {
+                    "type": "array",
+                    "x-ms-summary": "Statuses",
+                    "description": "The invoice statuses to match. For unpaid or overdue invoices use SENT, UNPAID and PARTIALLY_PAID. PAID_EXTERNAL and MARKED_AS_PAID are invoices paid outside PayPal.",
+                    "items": {
+                        "type": "string",
+                        "x-ms-summary": "Status",
+                        "description": "An invoice status to match.",
+                        "enum": [
+                            "DRAFT",
+                            "SENT",
+                            "SCHEDULED",
+                            "PAID",
+                            "MARKED_AS_PAID",
+                            "CANCELLED",
+                            "REFUNDED",
+                            "PARTIALLY_PAID",
+                            "PARTIALLY_REFUNDED",
+                            "MARKED_AS_REFUNDED",
+                            "UNPAID",
+                            "PAYMENT_PENDING",
+                            "AUTO_CANCELLED",
+                            "PAID_EXTERNAL",
+                            "REFUNDED_EXTERNAL",
+                            "SHARED"
+                        ]
+                    }
+                },
+                "recipient_email": {
+                    "type": "string",
+                    "x-ms-summary": "Recipient Email",
+                    "description": "The email address of the customer who was billed. Partial values are matched."
+                },
+                "invoice_number": {
+                    "type": "string",
+                    "x-ms-summary": "Invoice Number",
+                    "description": "The invoice number shown to the customer. Partial values are matched."
+                },
+                "invoice_date_range": {
+                    "type": "object",
+                    "x-ms-summary": "Invoice Date Range",
+                    "description": "Filters invoices by invoice date, in YYYY-MM-DD format.",
+                    "required": [
+                        "start",
+                        "end"
+                    ],
+                    "properties": {
+                        "start": {
+                            "type": "string",
+                            "x-ms-summary": "Invoice Date Range Start",
+                            "description": "The start of the range, for example 2026-01-31. Required when the range is used.",
+                            "format": "date"
+                        },
+                        "end": {
+                            "type": "string",
+                            "x-ms-summary": "Invoice Date Range End",
+                            "description": "The end of the range, for example 2026-01-31. Required when the range is used.",
+                            "format": "date"
+                        }
+                    }
+                },
+                "due_date_range": {
+                    "type": "object",
+                    "x-ms-summary": "Due Date Range",
+                    "description": "Filters invoices by payment due date, in YYYY-MM-DD format. A range that ends before today finds overdue invoices.",
+                    "required": [
+                        "start",
+                        "end"
+                    ],
+                    "properties": {
+                        "start": {
+                            "type": "string",
+                            "x-ms-summary": "Due Date Range Start",
+                            "description": "The start of the range, for example 2026-01-31. Required when the range is used.",
+                            "format": "date"
+                        },
+                        "end": {
+                            "type": "string",
+                            "x-ms-summary": "Due Date Range End",
+                            "description": "The end of the range, for example 2026-01-31. Required when the range is used.",
+                            "format": "date"
+                        }
+                    }
+                },
+                "payment_date_range": {
+                    "type": "object",
+                    "x-ms-summary": "Payment Date Range",
+                    "description": "Filters invoices by the date and time a payment was received.",
+                    "required": [
+                        "start",
+                        "end"
+                    ],
+                    "properties": {
+                        "start": {
+                            "type": "string",
+                            "x-ms-summary": "Payment Date Range Start",
+                            "description": "The start of the range, for example 2026-01-31T00:00:00Z. Required when the range is used.",
+                            "format": "date-time"
+                        },
+                        "end": {
+                            "type": "string",
+                            "x-ms-summary": "Payment Date Range End",
+                            "description": "The end of the range, for example 2026-01-31T00:00:00Z. Required when the range is used.",
+                            "format": "date-time"
+                        }
+                    },
+                    "x-ms-visibility": "advanced"
+                },
+                "creation_date_range": {
+                    "type": "object",
+                    "x-ms-summary": "Creation Date Range",
+                    "description": "Filters invoices by the date and time the invoice was created.",
+                    "required": [
+                        "start",
+                        "end"
+                    ],
+                    "properties": {
+                        "start": {
+                            "type": "string",
+                            "x-ms-summary": "Creation Date Range Start",
+                            "description": "The start of the range, for example 2026-01-31T00:00:00Z. Required when the range is used.",
+                            "format": "date-time"
+                        },
+                        "end": {
+                            "type": "string",
+                            "x-ms-summary": "Creation Date Range End",
+                            "description": "The end of the range, for example 2026-01-31T00:00:00Z. Required when the range is used.",
+                            "format": "date-time"
+                        }
+                    },
+                    "x-ms-visibility": "advanced"
+                },
+                "total_amount_range": {
+                    "type": "object",
+                    "x-ms-summary": "Total Amount Range",
+                    "description": "Filters invoices by total amount. Both the minimum and the maximum are required, in the same currency.",
+                    "required": [
+                        "lower_amount",
+                        "upper_amount"
+                    ],
+                    "properties": {
+                        "lower_amount": {
+                            "type": "object",
+                            "x-ms-summary": "Minimum Total",
+                            "description": "The lowest invoice total to match.",
+                            "required": [
+                                "currency_code",
+                                "value"
+                            ],
+                            "properties": {
+                                "currency_code": {
+                                    "type": "string",
+                                    "x-ms-summary": "Minimum Total Currency",
+                                    "description": "The three-character ISO-4217 currency code, for example USD."
+                                },
+                                "value": {
+                                    "type": "string",
+                                    "x-ms-summary": "Minimum Total Value",
+                                    "description": "The amount as a decimal string, for example 150.00."
+                                }
+                            }
+                        },
+                        "upper_amount": {
+                            "type": "object",
+                            "x-ms-summary": "Maximum Total",
+                            "description": "The highest invoice total to match.",
+                            "required": [
+                                "currency_code",
+                                "value"
+                            ],
+                            "properties": {
+                                "currency_code": {
+                                    "type": "string",
+                                    "x-ms-summary": "Maximum Total Currency",
+                                    "description": "The three-character ISO-4217 currency code, for example USD."
+                                },
+                                "value": {
+                                    "type": "string",
+                                    "x-ms-summary": "Maximum Total Value",
+                                    "description": "The amount as a decimal string, for example 150.00."
+                                }
+                            }
+                        }
+                    }
+                },
+                "currency_code": {
+                    "type": "string",
+                    "x-ms-summary": "Currency",
+                    "description": "The three-character ISO-4217 currency code of the invoices to match, for example USD.",
+                    "x-ms-visibility": "advanced"
+                },
+                "recipient_first_name": {
+                    "type": "string",
+                    "x-ms-summary": "Recipient First Name",
+                    "description": "The first name of the customer who was billed.",
+                    "x-ms-visibility": "advanced"
+                },
+                "recipient_last_name": {
+                    "type": "string",
+                    "x-ms-summary": "Recipient Last Name",
+                    "description": "The last name of the customer who was billed.",
+                    "x-ms-visibility": "advanced"
+                },
+                "recipient_business_name": {
+                    "type": "string",
+                    "x-ms-summary": "Recipient Business Name",
+                    "description": "The business name of the customer who was billed.",
+                    "x-ms-visibility": "advanced"
+                },
+                "reference": {
+                    "type": "string",
+                    "x-ms-summary": "Reference",
+                    "description": "The external reference of the invoice, such as a purchase order number.",
+                    "x-ms-visibility": "advanced"
+                },
+                "memo": {
+                    "type": "string",
+                    "x-ms-summary": "Private Memo",
+                    "description": "Text in the private bookkeeping memo of the invoice.",
+                    "x-ms-visibility": "advanced"
+                },
+                "archived": {
+                    "type": "boolean",
+                    "x-ms-summary": "Archived",
+                    "description": "Whether to return archived invoices (true) or only active invoices (false). Returns both when empty.",
+                    "x-ms-visibility": "advanced"
+                }
+            }
+        },
+        "OrderRequest": {
+            "type": "object",
+            "x-ms-summary": "Order Request",
+            "description": "The checkout order to create.",
+            "required": [
+                "intent",
+                "purchase_units"
+            ],
+            "properties": {
+                "intent": {
+                    "type": "string",
+                    "x-ms-summary": "Intent",
+                    "description": "CAPTURE to collect the payment right after the customer approves, or AUTHORIZE to place a hold and capture later.",
+                    "enum": [
+                        "CAPTURE",
+                        "AUTHORIZE"
+                    ],
+                    "default": "CAPTURE"
+                },
+                "purchase_units": {
+                    "type": "array",
+                    "x-ms-summary": "Purchase Units",
+                    "description": "The purchases covered by the order, from 1 to 10. Usually a single purchase unit with the amount to collect.",
+                    "items": {
+                        "type": "object",
+                        "x-ms-summary": "Purchase Unit",
+                        "description": "A purchase covered by the order.",
+                        "required": [
+                            "amount"
+                        ],
+                        "properties": {
+                            "amount": {
+                                "type": "object",
+                                "x-ms-summary": "Order Amount",
+                                "description": "The total amount to collect for this purchase unit.",
+                                "required": [
+                                    "currency_code",
+                                    "value"
+                                ],
+                                "properties": {
+                                    "currency_code": {
+                                        "type": "string",
+                                        "x-ms-summary": "Order Amount Currency",
+                                        "description": "The three-character ISO-4217 currency code, for example USD."
+                                    },
+                                    "value": {
+                                        "type": "string",
+                                        "x-ms-summary": "Order Amount Value",
+                                        "description": "The amount as a decimal string, for example 150.00."
+                                    }
+                                }
+                            },
+                            "description": {
+                                "type": "string",
+                                "x-ms-summary": "Purchase Description",
+                                "description": "A description of the purchase shown to the customer, for example Payment of invoice INV-0042. PayPal truncates it after 127 characters.",
+                                "maxLength": 3000
+                            },
+                            "invoice_id": {
+                                "type": "string",
+                                "x-ms-summary": "External Invoice Number",
+                                "description": "Your own invoice number for this payment. It appears in the customer's transaction history and emails and in the transaction reports. By default it must be unique within the merchant account, so a second order with the same value is rejected.",
+                                "maxLength": 127
+                            },
+                            "custom_id": {
+                                "type": "string",
+                                "x-ms-summary": "Custom ID",
+                                "description": "Your own identifier for this payment, such as the CRM record ID. It appears in transaction reports but is not shown to the customer.",
+                                "maxLength": 255,
+                                "x-ms-visibility": "advanced"
+                            },
+                            "reference_id": {
+                                "type": "string",
+                                "x-ms-summary": "Reference ID",
+                                "description": "An identifier for the purchase unit. Needed only when the order has several purchase units.",
+                                "maxLength": 256,
+                                "x-ms-visibility": "advanced"
+                            }
+                        }
+                    },
+                    "minItems": 1,
+                    "maxItems": 10
+                },
+                "payment_source": {
+                    "type": "object",
+                    "x-ms-summary": "Payment Source",
+                    "description": "How the customer pays. Only the PayPal wallet checkout experience is exposed.",
+                    "properties": {
+                        "paypal": {
+                            "type": "object",
+                            "x-ms-summary": "PayPal Wallet",
+                            "description": "Settings for payment with a PayPal account.",
+                            "properties": {
+                                "experience_context": {
+                                    "type": "object",
+                                    "x-ms-summary": "Checkout Experience",
+                                    "description": "Customizes the PayPal checkout pages shown to the customer.",
+                                    "properties": {
+                                        "return_url": {
+                                            "type": "string",
+                                            "x-ms-summary": "Return URL",
+                                            "description": "The web address the customer is redirected to after approving the payment. Supply it whenever the payment link is sent to the customer directly, otherwise PayPal shows an error page after approval."
+                                        },
+                                        "cancel_url": {
+                                            "type": "string",
+                                            "x-ms-summary": "Cancel URL",
+                                            "description": "The web address the customer is redirected to after cancelling the payment."
+                                        },
+                                        "brand_name": {
+                                            "type": "string",
+                                            "x-ms-summary": "Brand Name",
+                                            "description": "The business name shown on the PayPal checkout pages instead of the name of the PayPal account.",
+                                            "maxLength": 127
+                                        },
+                                        "user_action": {
+                                            "type": "string",
+                                            "x-ms-summary": "User Action",
+                                            "description": "PAY_NOW shows a Pay Now button and suits a known final amount. CONTINUE shows a Continue button for flows where the amount is confirmed later.",
+                                            "enum": [
+                                                "CONTINUE",
+                                                "PAY_NOW"
+                                            ]
+                                        },
+                                        "shipping_preference": {
+                                            "type": "string",
+                                            "x-ms-summary": "Shipping Preference",
+                                            "description": "Where the shipping address comes from. NO_SHIPPING hides the shipping address, which suits payments for invoices and services.",
+                                            "enum": [
+                                                "GET_FROM_FILE",
+                                                "NO_SHIPPING",
+                                                "SET_PROVIDED_ADDRESS"
+                                            ]
+                                        },
+                                        "payment_method_preference": {
+                                            "type": "string",
+                                            "x-ms-summary": "Payment Method Preference",
+                                            "description": "IMMEDIATE_PAYMENT_REQUIRED accepts only instant payment methods, so the captured payment is never left pending. UNRESTRICTED accepts any payment method.",
+                                            "enum": [
+                                                "UNRESTRICTED",
+                                                "IMMEDIATE_PAYMENT_REQUIRED"
+                                            ],
+                                            "x-ms-visibility": "advanced"
+                                        },
+                                        "landing_page": {
+                                            "type": "string",
+                                            "x-ms-summary": "Landing Page",
+                                            "description": "The first PayPal page shown to the customer: LOGIN, GUEST_CHECKOUT (pay by card without an account), NO_PREFERENCE or BILLING (older name for the card page).",
+                                            "enum": [
+                                                "LOGIN",
+                                                "GUEST_CHECKOUT",
+                                                "NO_PREFERENCE",
+                                                "BILLING"
+                                            ],
+                                            "x-ms-visibility": "advanced"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "Order": {
+            "type": "object",
+            "x-ms-summary": "Order",
+            "description": "A PayPal checkout order.",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "x-ms-summary": "Order ID",
+                    "description": "The PayPal ID of the order. Use it to get or capture the order."
+                },
+                "status": {
+                    "type": "string",
+                    "x-ms-summary": "Order Status",
+                    "description": "The order status: CREATED, SAVED, APPROVED, VOIDED, COMPLETED or PAYER_ACTION_REQUIRED."
+                },
+                "intent": {
+                    "type": "string",
+                    "x-ms-summary": "Intent",
+                    "description": "The intent of the order: CAPTURE or AUTHORIZE."
+                },
+                "create_time": {
+                    "type": "string",
+                    "x-ms-summary": "Created Time",
+                    "description": "The date and time the order was created."
+                },
+                "update_time": {
+                    "type": "string",
+                    "x-ms-summary": "Updated Time",
+                    "description": "The date and time the order was last updated."
+                },
+                "payment_source": {
+                    "type": "object",
+                    "x-ms-summary": "Payment Source",
+                    "description": "The payment method that funds the order. Holds the details of the customer after approval.",
+                    "properties": {
+                        "paypal": {
+                            "type": "object",
+                            "x-ms-summary": "PayPal Wallet",
+                            "description": "The PayPal account of the customer who approved the order.",
+                            "properties": {
+                                "email_address": {
+                                    "type": "string",
+                                    "x-ms-summary": "Customer Email",
+                                    "description": "The email address of the PayPal account of the customer."
+                                },
+                                "account_id": {
+                                    "type": "string",
+                                    "x-ms-summary": "Customer Account ID",
+                                    "description": "The PayPal payer ID of the customer."
+                                },
+                                "account_status": {
+                                    "type": "string",
+                                    "x-ms-summary": "Customer Account Status",
+                                    "description": "Whether the customer has a verified PayPal account: VERIFIED or UNVERIFIED."
+                                },
+                                "name": {
+                                    "type": "object",
+                                    "x-ms-summary": "Customer Name",
+                                    "description": "The first and last name of the customer.",
+                                    "properties": {
+                                        "given_name": {
+                                            "type": "string",
+                                            "x-ms-summary": "Customer First Name",
+                                            "description": "The first (given) name of the customer."
+                                        },
+                                        "surname": {
+                                            "type": "string",
+                                            "x-ms-summary": "Customer Last Name",
+                                            "description": "The last name (surname) of the customer."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "payer": {
+                    "type": "object",
+                    "x-ms-summary": "Payer",
+                    "description": "The customer who approved the order. PayPal has deprecated this object in favor of the PayPal wallet details under Payment Source.",
+                    "properties": {
+                        "payer_id": {
+                            "type": "string",
+                            "x-ms-summary": "Payer ID",
+                            "description": "The PayPal account ID of the customer."
+                        },
+                        "email_address": {
+                            "type": "string",
+                            "x-ms-summary": "Payer Email",
+                            "description": "The email address of the customer."
+                        },
+                        "name": {
+                            "type": "object",
+                            "x-ms-summary": "Payer Name",
+                            "description": "The first and last name of the payer.",
+                            "properties": {
+                                "given_name": {
+                                    "type": "string",
+                                    "x-ms-summary": "Payer First Name",
+                                    "description": "The first (given) name of the payer."
+                                },
+                                "surname": {
+                                    "type": "string",
+                                    "x-ms-summary": "Payer Last Name",
+                                    "description": "The last name (surname) of the payer."
+                                }
+                            }
+                        }
+                    }
+                },
+                "purchase_units": {
+                    "type": "array",
+                    "x-ms-summary": "Purchase Units",
+                    "description": "The purchases covered by the order.",
+                    "items": {
+                        "type": "object",
+                        "x-ms-summary": "Purchase Unit",
+                        "description": "A purchase covered by the order.",
+                        "properties": {
+                            "reference_id": {
+                                "type": "string",
+                                "x-ms-summary": "Reference ID",
+                                "description": "The identifier of the purchase unit."
+                            },
+                            "description": {
+                                "type": "string",
+                                "x-ms-summary": "Purchase Description",
+                                "description": "The description of the purchase."
+                            },
+                            "invoice_id": {
+                                "type": "string",
+                                "x-ms-summary": "External Invoice Number",
+                                "description": "Your own invoice number for this payment."
+                            },
+                            "custom_id": {
+                                "type": "string",
+                                "x-ms-summary": "Custom ID",
+                                "description": "Your own identifier for this payment."
+                            },
+                            "amount": {
+                                "type": "object",
+                                "x-ms-summary": "Order Amount",
+                                "description": "The total amount of the purchase unit.",
+                                "properties": {
+                                    "currency_code": {
+                                        "type": "string",
+                                        "x-ms-summary": "Order Amount Currency",
+                                        "description": "The three-character ISO-4217 currency code, for example USD."
+                                    },
+                                    "value": {
+                                        "type": "string",
+                                        "x-ms-summary": "Order Amount Value",
+                                        "description": "The amount as a decimal string, for example 150.00."
+                                    }
+                                }
+                            },
+                            "payee": {
+                                "type": "object",
+                                "x-ms-summary": "Payee",
+                                "description": "The merchant who receives the payment.",
+                                "properties": {
+                                    "email_address": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payee Email",
+                                        "description": "The email address of the merchant."
+                                    },
+                                    "merchant_id": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payee Merchant ID",
+                                        "description": "The PayPal account ID of the merchant."
+                                    }
+                                }
+                            },
+                            "payments": {
+                                "type": "object",
+                                "x-ms-summary": "Payments",
+                                "description": "The payments collected for the purchase unit. Available after capture.",
+                                "properties": {
+                                    "captures": {
+                                        "type": "array",
+                                        "x-ms-summary": "Captures",
+                                        "description": "The captured payments.",
+                                        "items": {
+                                            "type": "object",
+                                            "x-ms-summary": "Capture",
+                                            "description": "A captured payment.",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "x-ms-summary": "Capture ID",
+                                                    "description": "The PayPal ID of the captured payment. It is the transaction ID shown in the reports."
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "x-ms-summary": "Capture Status",
+                                                    "description": "The capture status: COMPLETED, PENDING, DECLINED, REFUNDED, PARTIALLY_REFUNDED or FAILED."
+                                                },
+                                                "status_details": {
+                                                    "type": "object",
+                                                    "x-ms-summary": "Capture Status Details",
+                                                    "description": "Explains a capture that is pending or declined.",
+                                                    "properties": {
+                                                        "reason": {
+                                                            "type": "string",
+                                                            "x-ms-summary": "Capture Status Reason",
+                                                            "description": "Why the capture is pending or declined, for example ECHECK, PENDING_REVIEW, VERIFICATION_REQUIRED or DECLINED_BY_RISK_FRAUD_FILTERS."
+                                                        }
+                                                    }
+                                                },
+                                                "invoice_id": {
+                                                    "type": "string",
+                                                    "x-ms-summary": "Capture Invoice Number",
+                                                    "description": "Your own invoice number that was sent with the order."
+                                                },
+                                                "custom_id": {
+                                                    "type": "string",
+                                                    "x-ms-summary": "Capture Custom ID",
+                                                    "description": "Your own identifier that was sent with the order."
+                                                },
+                                                "amount": {
+                                                    "type": "object",
+                                                    "x-ms-summary": "Captured Amount",
+                                                    "description": "The amount that was captured.",
+                                                    "properties": {
+                                                        "currency_code": {
+                                                            "type": "string",
+                                                            "x-ms-summary": "Captured Amount Currency",
+                                                            "description": "The three-character ISO-4217 currency code, for example USD."
+                                                        },
+                                                        "value": {
+                                                            "type": "string",
+                                                            "x-ms-summary": "Captured Amount Value",
+                                                            "description": "The amount as a decimal string, for example 150.00."
+                                                        }
+                                                    }
+                                                },
+                                                "final_capture": {
+                                                    "type": "boolean",
+                                                    "x-ms-summary": "Final Capture",
+                                                    "description": "Whether this is the final capture for the order."
+                                                },
+                                                "create_time": {
+                                                    "type": "string",
+                                                    "x-ms-summary": "Capture Created Time",
+                                                    "description": "The date and time the payment was captured."
+                                                },
+                                                "update_time": {
+                                                    "type": "string",
+                                                    "x-ms-summary": "Capture Updated Time",
+                                                    "description": "The date and time the capture was last updated."
+                                                },
+                                                "seller_receivable_breakdown": {
+                                                    "type": "object",
+                                                    "x-ms-summary": "Receivable Breakdown",
+                                                    "description": "The breakdown of the amount the merchant receives.",
+                                                    "properties": {
+                                                        "gross_amount": {
+                                                            "type": "object",
+                                                            "x-ms-summary": "Gross Amount",
+                                                            "description": "The amount paid by the customer.",
+                                                            "properties": {
+                                                                "currency_code": {
+                                                                    "type": "string",
+                                                                    "x-ms-summary": "Gross Amount Currency",
+                                                                    "description": "The three-character ISO-4217 currency code, for example USD."
+                                                                },
+                                                                "value": {
+                                                                    "type": "string",
+                                                                    "x-ms-summary": "Gross Amount Value",
+                                                                    "description": "The amount as a decimal string, for example 150.00."
+                                                                }
+                                                            }
+                                                        },
+                                                        "paypal_fee": {
+                                                            "type": "object",
+                                                            "x-ms-summary": "PayPal Fee",
+                                                            "description": "The fee charged by PayPal.",
+                                                            "properties": {
+                                                                "currency_code": {
+                                                                    "type": "string",
+                                                                    "x-ms-summary": "PayPal Fee Currency",
+                                                                    "description": "The three-character ISO-4217 currency code, for example USD."
+                                                                },
+                                                                "value": {
+                                                                    "type": "string",
+                                                                    "x-ms-summary": "PayPal Fee Value",
+                                                                    "description": "The amount as a decimal string, for example 150.00."
+                                                                }
+                                                            }
+                                                        },
+                                                        "net_amount": {
+                                                            "type": "object",
+                                                            "x-ms-summary": "Net Amount",
+                                                            "description": "The amount credited to the merchant after fees.",
+                                                            "properties": {
+                                                                "currency_code": {
+                                                                    "type": "string",
+                                                                    "x-ms-summary": "Net Amount Currency",
+                                                                    "description": "The three-character ISO-4217 currency code, for example USD."
+                                                                },
+                                                                "value": {
+                                                                    "type": "string",
+                                                                    "x-ms-summary": "Net Amount Value",
+                                                                    "description": "The amount as a decimal string, for example 150.00."
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "links": {
+                    "type": "array",
+                    "x-ms-summary": "Links",
+                    "description": "The HATEOAS links of the order. The link with relation approve or payer-action is the payment page to send to the customer. It must be opened within 6 hours of creating the order.",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "PayoutRequest": {
+            "type": "object",
+            "x-ms-summary": "Payout Request",
+            "description": "The batch payout to create.",
+            "required": [
+                "sender_batch_header",
+                "items"
+            ],
+            "properties": {
+                "sender_batch_header": {
+                    "type": "object",
+                    "x-ms-summary": "Batch Header",
+                    "description": "Settings that apply to the whole payout batch.",
+                    "required": [
+                        "sender_batch_id"
+                    ],
+                    "properties": {
+                        "sender_batch_id": {
+                            "type": "string",
+                            "x-ms-summary": "Sender Batch ID",
+                            "description": "Your own unique ID for this batch. PayPal rejects a batch that reuses an ID from the last 30 days, which prevents duplicate payouts and makes it safe to retry a failed request with the same ID."
+                        },
+                        "email_subject": {
+                            "type": "string",
+                            "x-ms-summary": "Email Subject",
+                            "description": "The subject of the email PayPal sends to each recipient."
+                        },
+                        "email_message": {
+                            "type": "string",
+                            "x-ms-summary": "Email Message",
+                            "description": "The message of the email PayPal sends to each recipient."
+                        },
+                        "recipient_type": {
+                            "type": "string",
+                            "x-ms-summary": "Default Recipient Type",
+                            "description": "How recipients are identified when an item does not say so: EMAIL, PHONE, PAYPAL_ID or USER_HANDLE.",
+                            "enum": [
+                                "EMAIL",
+                                "PHONE",
+                                "PAYPAL_ID",
+                                "USER_HANDLE"
+                            ],
+                            "x-ms-visibility": "advanced"
+                        }
+                    }
+                },
+                "items": {
+                    "type": "array",
+                    "x-ms-summary": "Payout Items",
+                    "description": "The individual payments in the batch, one for each recipient.",
+                    "items": {
+                        "type": "object",
+                        "x-ms-summary": "Payout Item",
+                        "description": "A payment to one recipient.",
+                        "required": [
+                            "receiver",
+                            "amount"
+                        ],
+                        "properties": {
+                            "receiver": {
+                                "type": "string",
+                                "x-ms-summary": "Receiver",
+                                "description": "The recipient of the money: an email address, phone number or PayPal account ID, matching the recipient type. Up to 127 characters."
+                            },
+                            "amount": {
+                                "type": "object",
+                                "x-ms-summary": "Payout Amount",
+                                "description": "The amount to send to the recipient.",
+                                "required": [
+                                    "currency",
+                                    "value"
+                                ],
+                                "properties": {
+                                    "currency": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payout Amount Currency",
+                                        "description": "The three-character ISO-4217 currency code, for example USD."
+                                    },
+                                    "value": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payout Amount Value",
+                                        "description": "The amount as a decimal string, for example 150.00."
+                                    }
+                                }
+                            },
+                            "recipient_type": {
+                                "type": "string",
+                                "x-ms-summary": "Recipient Type",
+                                "description": "How the receiver is identified: EMAIL, PHONE, PAYPAL_ID or USER_HANDLE (Venmo). Needed on every item unless the batch header sets a default. The sandbox does not support PHONE.",
+                                "enum": [
+                                    "EMAIL",
+                                    "PHONE",
+                                    "PAYPAL_ID",
+                                    "USER_HANDLE"
+                                ]
+                            },
+                            "note": {
+                                "type": "string",
+                                "x-ms-summary": "Note To Recipient",
+                                "description": "A note shown to the recipient with the payment."
+                            },
+                            "sender_item_id": {
+                                "type": "string",
+                                "x-ms-summary": "Sender Item ID",
+                                "description": "Your own ID for this payout item, used for reconciliation.",
+                                "x-ms-visibility": "advanced"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "PayoutCreated": {
+            "type": "object",
+            "x-ms-summary": "Payout Created",
+            "description": "The payout batch that was created.",
+            "properties": {
+                "batch_header": {
+                    "type": "object",
+                    "x-ms-summary": "Batch Header",
+                    "description": "The status and summary of the payout batch.",
+                    "properties": {
+                        "payout_batch_id": {
+                            "type": "string",
+                            "x-ms-summary": "Payout Batch ID",
+                            "description": "The PayPal ID of the payout batch. Use it to get the batch status."
+                        },
+                        "batch_status": {
+                            "type": "string",
+                            "x-ms-summary": "Batch Status",
+                            "description": "The batch status: PENDING, PROCESSING, SUCCESS, DENIED or CANCELED."
+                        },
+                        "sender_batch_header": {
+                            "type": "object",
+                            "x-ms-summary": "Sender Batch Header",
+                            "description": "The batch settings supplied when the payout was created.",
+                            "properties": {
+                                "sender_batch_id": {
+                                    "type": "string",
+                                    "x-ms-summary": "Sender Batch ID",
+                                    "description": "Your own unique ID for the batch."
+                                },
+                                "email_subject": {
+                                    "type": "string",
+                                    "x-ms-summary": "Email Subject",
+                                    "description": "The subject of the email sent to each recipient."
+                                },
+                                "email_message": {
+                                    "type": "string",
+                                    "x-ms-summary": "Email Message",
+                                    "description": "The message of the email sent to each recipient."
+                                }
+                            }
+                        }
+                    }
+                },
+                "links": {
+                    "type": "array",
+                    "x-ms-summary": "Links",
+                    "description": "The HATEOAS links of the payout batch.",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "PayoutBatch": {
+            "type": "object",
+            "x-ms-summary": "Payout Batch",
+            "description": "The status of a payout batch and its items.",
+            "properties": {
+                "batch_header": {
+                    "type": "object",
+                    "x-ms-summary": "Batch Header",
+                    "description": "The status and summary of the payout batch.",
+                    "properties": {
+                        "payout_batch_id": {
+                            "type": "string",
+                            "x-ms-summary": "Payout Batch ID",
+                            "description": "The PayPal ID of the payout batch. Use it to get the batch status."
+                        },
+                        "batch_status": {
+                            "type": "string",
+                            "x-ms-summary": "Batch Status",
+                            "description": "The batch status: PENDING, PROCESSING, SUCCESS, DENIED or CANCELED."
+                        },
+                        "time_created": {
+                            "type": "string",
+                            "x-ms-summary": "Created Time",
+                            "description": "The date and time the batch was created."
+                        },
+                        "time_completed": {
+                            "type": "string",
+                            "x-ms-summary": "Completed Time",
+                            "description": "The date and time the batch finished processing."
+                        },
+                        "time_closed": {
+                            "type": "string",
+                            "x-ms-summary": "Closed Time",
+                            "description": "The date and time the batch was closed, after all items were processed and held funds were released."
+                        },
+                        "amount": {
+                            "type": "object",
+                            "x-ms-summary": "Batch Total",
+                            "description": "The total amount of all payout items in the batch.",
+                            "properties": {
+                                "currency": {
+                                    "type": "string",
+                                    "x-ms-summary": "Batch Total Currency",
+                                    "description": "The three-character ISO-4217 currency code, for example USD."
+                                },
+                                "value": {
+                                    "type": "string",
+                                    "x-ms-summary": "Batch Total Value",
+                                    "description": "The amount as a decimal string, for example 150.00."
+                                }
+                            }
+                        },
+                        "fees": {
+                            "type": "object",
+                            "x-ms-summary": "Batch Fees",
+                            "description": "The total fees charged for the batch.",
+                            "properties": {
+                                "currency": {
+                                    "type": "string",
+                                    "x-ms-summary": "Batch Fees Currency",
+                                    "description": "The three-character ISO-4217 currency code, for example USD."
+                                },
+                                "value": {
+                                    "type": "string",
+                                    "x-ms-summary": "Batch Fees Value",
+                                    "description": "The amount as a decimal string, for example 150.00."
+                                }
+                            }
+                        },
+                        "sender_batch_header": {
+                            "type": "object",
+                            "x-ms-summary": "Sender Batch Header",
+                            "description": "The batch settings supplied when the payout was created.",
+                            "properties": {
+                                "sender_batch_id": {
+                                    "type": "string",
+                                    "x-ms-summary": "Sender Batch ID",
+                                    "description": "Your own unique ID for the batch."
+                                },
+                                "email_subject": {
+                                    "type": "string",
+                                    "x-ms-summary": "Email Subject",
+                                    "description": "The subject of the email sent to each recipient."
+                                },
+                                "email_message": {
+                                    "type": "string",
+                                    "x-ms-summary": "Email Message",
+                                    "description": "The message of the email sent to each recipient."
+                                }
+                            }
+                        }
+                    }
+                },
+                "items": {
+                    "type": "array",
+                    "x-ms-summary": "Payout Items",
+                    "description": "The individual payments in the batch.",
+                    "items": {
+                        "type": "object",
+                        "x-ms-summary": "Payout Item",
+                        "description": "A payment to one recipient.",
+                        "properties": {
+                            "payout_item_id": {
+                                "type": "string",
+                                "x-ms-summary": "Payout Item ID",
+                                "description": "The PayPal ID of the payout item."
+                            },
+                            "transaction_id": {
+                                "type": "string",
+                                "x-ms-summary": "Transaction ID",
+                                "description": "The PayPal transaction ID of the payment."
+                            },
+                            "transaction_status": {
+                                "type": "string",
+                                "x-ms-summary": "Item Status",
+                                "description": "The item status: SUCCESS, FAILED, PENDING, UNCLAIMED, RETURNED, ONHOLD, BLOCKED, REFUNDED or REVERSED."
+                            },
+                            "payout_item_fee": {
+                                "type": "object",
+                                "x-ms-summary": "Item Fee",
+                                "description": "The fee charged for this payout item.",
+                                "properties": {
+                                    "currency": {
+                                        "type": "string",
+                                        "x-ms-summary": "Item Fee Currency",
+                                        "description": "The three-character ISO-4217 currency code, for example USD."
+                                    },
+                                    "value": {
+                                        "type": "string",
+                                        "x-ms-summary": "Item Fee Value",
+                                        "description": "The amount as a decimal string, for example 150.00."
+                                    }
+                                }
+                            },
+                            "payout_batch_id": {
+                                "type": "string",
+                                "x-ms-summary": "Payout Batch ID",
+                                "description": "The PayPal ID of the batch that contains the item."
+                            },
+                            "time_processed": {
+                                "type": "string",
+                                "x-ms-summary": "Processed Time",
+                                "description": "The date and time the item was last processed."
+                            },
+                            "payout_item": {
+                                "type": "object",
+                                "x-ms-summary": "Payout Item Detail",
+                                "description": "The payout item as it was requested.",
+                                "properties": {
+                                    "recipient_type": {
+                                        "type": "string",
+                                        "x-ms-summary": "Recipient Type",
+                                        "description": "How the receiver is identified: EMAIL, PHONE, PAYPAL_ID or USER_HANDLE."
+                                    },
+                                    "receiver": {
+                                        "type": "string",
+                                        "x-ms-summary": "Receiver",
+                                        "description": "The recipient of the money."
+                                    },
+                                    "amount": {
+                                        "type": "object",
+                                        "x-ms-summary": "Payout Amount",
+                                        "description": "The amount sent to the recipient.",
+                                        "properties": {
+                                            "currency": {
+                                                "type": "string",
+                                                "x-ms-summary": "Payout Amount Currency",
+                                                "description": "The three-character ISO-4217 currency code, for example USD."
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "x-ms-summary": "Payout Amount Value",
+                                                "description": "The amount as a decimal string, for example 150.00."
+                                            }
+                                        }
+                                    },
+                                    "note": {
+                                        "type": "string",
+                                        "x-ms-summary": "Note To Recipient",
+                                        "description": "The note shown to the recipient."
+                                    },
+                                    "sender_item_id": {
+                                        "type": "string",
+                                        "x-ms-summary": "Sender Item ID",
+                                        "description": "Your own ID for the payout item."
+                                    }
+                                }
+                            },
+                            "errors": {
+                                "type": "object",
+                                "x-ms-summary": "Item Error",
+                                "description": "The reason the payout item failed, when it failed.",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "x-ms-summary": "Error Name",
+                                        "description": "The PayPal error code, for example RECEIVER_UNREGISTERED."
+                                    },
+                                    "message": {
+                                        "type": "string",
+                                        "x-ms-summary": "Error Message",
+                                        "description": "The description of the error."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "total_items": {
+                    "type": "integer",
+                    "x-ms-summary": "Total Items",
+                    "description": "The total number of items in the batch. Only returned when Show Totals is true.",
+                    "format": "int32"
+                },
+                "total_pages": {
+                    "type": "integer",
+                    "x-ms-summary": "Total Pages",
+                    "description": "The total number of pages. Only returned when Show Totals is true.",
+                    "format": "int32"
+                },
+                "links": {
+                    "type": "array",
+                    "x-ms-summary": "Links",
+                    "description": "The HATEOAS links of the payout batch.",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        },
+        "TransactionList": {
+            "type": "object",
+            "x-ms-summary": "Transaction List",
+            "description": "A page of account transactions.",
+            "properties": {
+                "transaction_details": {
+                    "type": "array",
+                    "x-ms-summary": "Transactions",
+                    "description": "The transactions on this page.",
+                    "items": {
+                        "type": "object",
+                        "x-ms-summary": "Transaction",
+                        "description": "An account transaction.",
+                        "properties": {
+                            "transaction_info": {
+                                "type": "object",
+                                "x-ms-summary": "Transaction Info",
+                                "description": "The core details of the transaction.",
+                                "properties": {
+                                    "transaction_id": {
+                                        "type": "string",
+                                        "x-ms-summary": "Transaction ID",
+                                        "description": "The PayPal ID of the transaction."
+                                    },
+                                    "paypal_reference_id": {
+                                        "type": "string",
+                                        "x-ms-summary": "Reference ID",
+                                        "description": "The ID of the related transaction, such as the original payment of a refund."
+                                    },
+                                    "paypal_reference_id_type": {
+                                        "type": "string",
+                                        "x-ms-summary": "Reference ID Type",
+                                        "description": "The type of the related transaction ID, for example TXN for a transaction or ODR for an order."
+                                    },
+                                    "transaction_event_code": {
+                                        "type": "string",
+                                        "x-ms-summary": "Event Code",
+                                        "description": "The PayPal event code that classifies the transaction, for example T0006 for a checkout payment."
+                                    },
+                                    "transaction_initiation_date": {
+                                        "type": "string",
+                                        "x-ms-summary": "Initiation Date",
+                                        "description": "The date and time the transaction started."
+                                    },
+                                    "transaction_updated_date": {
+                                        "type": "string",
+                                        "x-ms-summary": "Updated Date",
+                                        "description": "The date and time the transaction was last updated."
+                                    },
+                                    "transaction_amount": {
+                                        "type": "object",
+                                        "x-ms-summary": "Transaction Amount",
+                                        "description": "The gross amount of the transaction. Negative values are money leaving the account.",
+                                        "properties": {
+                                            "currency_code": {
+                                                "type": "string",
+                                                "x-ms-summary": "Transaction Amount Currency",
+                                                "description": "The three-character ISO-4217 currency code, for example USD."
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "x-ms-summary": "Transaction Amount Value",
+                                                "description": "The amount as a decimal string, for example 150.00."
+                                            }
+                                        }
+                                    },
+                                    "fee_amount": {
+                                        "type": "object",
+                                        "x-ms-summary": "Fee Amount",
+                                        "description": "The PayPal fee of the transaction.",
+                                        "properties": {
+                                            "currency_code": {
+                                                "type": "string",
+                                                "x-ms-summary": "Fee Amount Currency",
+                                                "description": "The three-character ISO-4217 currency code, for example USD."
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "x-ms-summary": "Fee Amount Value",
+                                                "description": "The amount as a decimal string, for example 150.00."
+                                            }
+                                        }
+                                    },
+                                    "transaction_status": {
+                                        "type": "string",
+                                        "x-ms-summary": "Transaction Status",
+                                        "description": "The status code: S for success, P for pending, D for denied or V for reversed."
+                                    },
+                                    "transaction_subject": {
+                                        "type": "string",
+                                        "x-ms-summary": "Transaction Subject",
+                                        "description": "The subject of the payment entered by the payer."
+                                    },
+                                    "transaction_note": {
+                                        "type": "string",
+                                        "x-ms-summary": "Transaction Note",
+                                        "description": "The note entered by the payer."
+                                    },
+                                    "invoice_id": {
+                                        "type": "string",
+                                        "x-ms-summary": "Invoice Number",
+                                        "description": "The merchant invoice number sent with the payment, such as the External Invoice Number of an order. Used to reconcile payments with invoices."
+                                    },
+                                    "custom_field": {
+                                        "type": "string",
+                                        "x-ms-summary": "Custom Field",
+                                        "description": "The custom ID sent with the payment."
+                                    },
+                                    "paypal_account_id": {
+                                        "type": "string",
+                                        "x-ms-summary": "Counterparty Account ID",
+                                        "description": "The PayPal account ID of the other party of the transaction."
+                                    },
+                                    "ending_balance": {
+                                        "type": "object",
+                                        "x-ms-summary": "Ending Balance",
+                                        "description": "The account balance after the transaction.",
+                                        "properties": {
+                                            "currency_code": {
+                                                "type": "string",
+                                                "x-ms-summary": "Ending Balance Currency",
+                                                "description": "The three-character ISO-4217 currency code, for example USD."
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "x-ms-summary": "Ending Balance Value",
+                                                "description": "The amount as a decimal string, for example 150.00."
+                                            }
+                                        }
+                                    },
+                                    "available_balance": {
+                                        "type": "object",
+                                        "x-ms-summary": "Available Balance",
+                                        "description": "The available account balance after the transaction.",
+                                        "properties": {
+                                            "currency_code": {
+                                                "type": "string",
+                                                "x-ms-summary": "Available Balance Currency",
+                                                "description": "The three-character ISO-4217 currency code, for example USD."
+                                            },
+                                            "value": {
+                                                "type": "string",
+                                                "x-ms-summary": "Available Balance Value",
+                                                "description": "The amount as a decimal string, for example 150.00."
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "payer_info": {
+                                "type": "object",
+                                "x-ms-summary": "Payer Info",
+                                "description": "The customer or other party of the transaction.",
+                                "properties": {
+                                    "account_id": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payer Account ID",
+                                        "description": "The PayPal account ID of the payer."
+                                    },
+                                    "email_address": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payer Email",
+                                        "description": "The email address of the payer."
+                                    },
+                                    "payer_name": {
+                                        "type": "object",
+                                        "x-ms-summary": "Payer Name",
+                                        "description": "The name of the payer.",
+                                        "properties": {
+                                            "given_name": {
+                                                "type": "string",
+                                                "x-ms-summary": "Payer First Name",
+                                                "description": "The first name of the payer."
+                                            },
+                                            "surname": {
+                                                "type": "string",
+                                                "x-ms-summary": "Payer Last Name",
+                                                "description": "The last name of the payer."
+                                            },
+                                            "full_name": {
+                                                "type": "string",
+                                                "x-ms-summary": "Payer Full Name",
+                                                "description": "The full name of the payer when the payer is a person."
+                                            },
+                                            "alternate_full_name": {
+                                                "type": "string",
+                                                "x-ms-summary": "Payer Alternate Name",
+                                                "description": "A business name or other name of the payer that cannot be split into first and last name. Deprecated by PayPal."
+                                            }
+                                        }
+                                    },
+                                    "country_code": {
+                                        "type": "string",
+                                        "x-ms-summary": "Payer Country",
+                                        "description": "The two-character ISO 3166-1 country code of the payer."
+                                    }
+                                }
+                            },
+                            "cart_info": {
+                                "type": "object",
+                                "x-ms-summary": "Cart Info",
+                                "description": "The items of the transaction and the PayPal invoice it paid.",
+                                "properties": {
+                                    "paypal_invoice_id": {
+                                        "type": "string",
+                                        "x-ms-summary": "PayPal Invoice ID",
+                                        "description": "The ID of the PayPal invoice that this transaction paid. Present only for payments of PayPal invoices, which makes it the direct link between a payment and an invoice."
+                                    },
+                                    "item_details": {
+                                        "type": "array",
+                                        "x-ms-summary": "Cart Items",
+                                        "description": "The items purchased in the transaction.",
+                                        "items": {
+                                            "type": "object",
+                                            "x-ms-summary": "Cart Item",
+                                            "description": "An item purchased in the transaction.",
+                                            "properties": {
+                                                "item_name": {
+                                                    "type": "string",
+                                                    "x-ms-summary": "Cart Item Name",
+                                                    "description": "The name of the item."
+                                                },
+                                                "item_description": {
+                                                    "type": "string",
+                                                    "x-ms-summary": "Cart Item Description",
+                                                    "description": "The description of the item."
+                                                },
+                                                "item_quantity": {
+                                                    "type": "string",
+                                                    "x-ms-summary": "Cart Item Quantity",
+                                                    "description": "The quantity of the item."
+                                                },
+                                                "item_unit_price": {
+                                                    "type": "object",
+                                                    "x-ms-summary": "Cart Item Unit Price",
+                                                    "description": "The price of one unit of the item.",
+                                                    "properties": {
+                                                        "currency_code": {
+                                                            "type": "string",
+                                                            "x-ms-summary": "Cart Item Unit Price Currency",
+                                                            "description": "The three-character ISO-4217 currency code, for example USD."
+                                                        },
+                                                        "value": {
+                                                            "type": "string",
+                                                            "x-ms-summary": "Cart Item Unit Price Value",
+                                                            "description": "The amount as a decimal string, for example 150.00."
+                                                        }
+                                                    }
+                                                },
+                                                "item_amount": {
+                                                    "type": "object",
+                                                    "x-ms-summary": "Cart Item Amount",
+                                                    "description": "The total amount of the item.",
+                                                    "properties": {
+                                                        "currency_code": {
+                                                            "type": "string",
+                                                            "x-ms-summary": "Cart Item Amount Currency",
+                                                            "description": "The three-character ISO-4217 currency code, for example USD."
+                                                        },
+                                                        "value": {
+                                                            "type": "string",
+                                                            "x-ms-summary": "Cart Item Amount Value",
+                                                            "description": "The amount as a decimal string, for example 150.00."
+                                                        }
+                                                    }
+                                                },
+                                                "invoice_number": {
+                                                    "type": "string",
+                                                    "x-ms-summary": "Cart Item Invoice Number",
+                                                    "description": "The invoice number related to the item."
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "account_number": {
+                    "type": "string",
+                    "x-ms-summary": "Account Number",
+                    "description": "The PayPal merchant account number the report belongs to."
+                },
+                "start_date": {
+                    "type": "string",
+                    "x-ms-summary": "Start Date",
+                    "description": "The start of the reported date range."
+                },
+                "end_date": {
+                    "type": "string",
+                    "x-ms-summary": "End Date",
+                    "description": "The end of the reported date range."
+                },
+                "last_refreshed_datetime": {
+                    "type": "string",
+                    "x-ms-summary": "Last Refreshed",
+                    "description": "The date and time the report data was last refreshed. Newer transactions are not included yet."
+                },
+                "page": {
+                    "type": "integer",
+                    "x-ms-summary": "Page",
+                    "description": "The current page number.",
+                    "format": "int32"
+                },
+                "total_items": {
+                    "type": "integer",
+                    "x-ms-summary": "Total Items",
+                    "description": "The total number of transactions that match.",
+                    "format": "int32"
+                },
+                "total_pages": {
+                    "type": "integer",
+                    "x-ms-summary": "Total Pages",
+                    "description": "The total number of pages.",
+                    "format": "int32"
+                },
+                "links": {
+                    "type": "array",
+                    "x-ms-summary": "Links",
+                    "description": "The HATEOAS links for paging.",
+                    "items": {
+                        "$ref": "#/definitions/Link"
+                    }
+                }
+            }
+        }
+    },
+    "parameters": {
+        "InvoiceId": {
+            "name": "invoice_id",
+            "in": "path",
+            "x-ms-summary": "Invoice ID",
+            "description": "The PayPal ID of the invoice, for example INV2-ABCD-1234-EFGH-5678. It is the id returned by Create draft invoice, List invoices or Search invoices.",
+            "required": true,
+            "type": "string",
+            "x-ms-url-encoding": "single"
+        },
+        "OrderId": {
+            "name": "id",
+            "in": "path",
+            "x-ms-summary": "Order ID",
+            "description": "The PayPal ID of the order, as returned by Create order.",
+            "required": true,
+            "type": "string",
+            "x-ms-url-encoding": "single"
+        },
+        "Page": {
+            "name": "page",
+            "in": "query",
+            "x-ms-summary": "Page",
+            "description": "The page number to return, starting at 1.",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 1,
+            "minimum": 1,
+            "maximum": 1000
+        },
+        "PageSize": {
+            "name": "page_size",
+            "in": "query",
+            "x-ms-summary": "Page Size",
+            "description": "The number of invoices to return per page, from 1 to 100.",
+            "required": false,
+            "type": "integer",
+            "format": "int32",
+            "default": 20,
+            "minimum": 1,
+            "maximum": 100
+        },
+        "TotalRequired": {
+            "name": "total_required",
+            "in": "query",
+            "x-ms-summary": "Show Totals",
+            "description": "Whether to return the total number of items and pages in the response.",
+            "required": false,
+            "type": "boolean",
+            "default": false
+        },
+        "PayPalRequestId": {
+            "name": "PayPal-Request-Id",
+            "in": "header",
+            "x-ms-summary": "Request ID",
+            "description": "A unique ID for this request that makes it safe to retry. Repeating a request with the same ID does not create a duplicate. PayPal keeps the ID for 6 hours.",
+            "required": false,
+            "type": "string",
+            "maxLength": 108,
+            "x-ms-visibility": "advanced"
+        }
+    },
+    "securityDefinitions": {
+        "basic_auth": {
+            "type": "basic"
+        }
+    },
+    "security": [
+        {
+            "basic_auth": []
+        }
+    ],
+    "tags": [
+        {
+            "name": "Invoicing",
+            "description": "Create, send, remind, cancel and find PayPal invoices."
+        },
+        {
+            "name": "Orders",
+            "description": "Create and capture one-time PayPal checkout payments."
+        },
+        {
+            "name": "Payouts",
+            "description": "Send money to recipients in batches."
+        },
+        {
+            "name": "Reporting",
+            "description": "List account transactions for reconciliation."
+        }
+    ],
+    "x-ms-connector-metadata": [
+        {
+            "propertyName": "Website",
+            "propertyValue": "https://developer.paypal.com"
+        },
+        {
+            "propertyName": "Privacy policy",
+            "propertyValue": "https://www.paypal.com/us/legalhub/privacy-full"
+        },
+        {
+            "propertyName": "Categories",
+            "propertyValue": "Finance;Commerce"
+        }
+    ]
+}

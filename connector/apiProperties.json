@@ -1,0 +1,52 @@
+{
+    "properties": {
+        "connectionParameters": {
+            "username": {
+                "type": "securestring",
+                "uiDefinition": {
+                    "displayName": "Client ID",
+                    "description": "The Client ID of your PayPal REST app (sandbox).",
+                    "tooltip": "Provide the sandbox Client ID from the PayPal Developer Dashboard (Apps & Credentials).",
+                    "constraints": {
+                        "tabIndex": 2,
+                        "clearText": true,
+                        "required": "true"
+                    }
+                }
+            },
+            "password": {
+                "type": "securestring",
+                "uiDefinition": {
+                    "displayName": "Secret",
+                    "description": "The Secret of your PayPal REST app (sandbox).",
+                    "tooltip": "Provide the sandbox Secret from the PayPal Developer Dashboard (Apps & Credentials).",
+                    "constraints": {
+                        "tabIndex": 3,
+                        "clearText": false,
+                        "required": "true"
+                    }
+                }
+            }
+        },
+        "iconBrandColor": "#003087",
+        "capabilities": [],
+        "scriptOperations": [
+            "GenerateNextInvoiceNumber",
+            "CreateDraftInvoice",
+            "SendInvoice",
+            "GetInvoice",
+            "ListInvoices",
+            "SearchInvoices",
+            "RemindInvoice",
+            "CancelInvoice",
+            "CreateOrder",
+            "GetOrder",
+            "CaptureOrder",
+            "CreatePayout",
+            "GetPayoutBatch",
+            "ListTransactions"
+        ],
+        "publisher": "Damian Sinay",
+        "stackOwner": "PayPal"
+    }
+}
