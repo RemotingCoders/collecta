@@ -941,6 +941,59 @@
                         }
                     }
                 },
+                "configuration": {
+                    "type": "object",
+                    "x-ms-summary": "Configuration",
+                    "description": "Payment options of the invoice.",
+                    "properties": {
+                        "partial_payment": {
+                            "type": "object",
+                            "x-ms-summary": "Partial Payment",
+                            "description": "Whether the customer may pay the invoice in several payments.",
+                            "properties": {
+                                "allow_partial_payment": {
+                                    "type": "boolean",
+                                    "x-ms-summary": "Allow Partial Payment",
+                                    "description": "True lets the customer pay part of the invoice; false requires payment in full. Defaults to false."
+                                },
+                                "minimum_amount_due": {
+                                    "type": "object",
+                                    "x-ms-summary": "Minimum Amount Due",
+                                    "description": "The smallest payment the customer may make when partial payments are allowed.",
+                                    "required": [
+                                        "currency_code",
+                                        "value"
+                                    ],
+                                    "properties": {
+                                        "currency_code": {
+                                            "type": "string",
+                                            "x-ms-summary": "Minimum Amount Due Currency",
+                                            "description": "The three-character ISO-4217 currency code, for example USD."
+                                        },
+                                        "value": {
+                                            "type": "string",
+                                            "x-ms-summary": "Minimum Amount Due Value",
+                                            "description": "The amount as a decimal string, for example 150.00."
+                                        }
+                                    },
+                                    "x-ms-visibility": "advanced"
+                                }
+                            }
+                        },
+                        "allow_tip": {
+                            "type": "boolean",
+                            "x-ms-summary": "Allow Tip",
+                            "description": "Whether the customer may add a tip when paying. Defaults to false.",
+                            "x-ms-visibility": "advanced"
+                        },
+                        "tax_inclusive": {
+                            "type": "boolean",
+                            "x-ms-summary": "Tax Inclusive",
+                            "description": "Whether the unit prices already include tax. Defaults to false.",
+                            "x-ms-visibility": "advanced"
+                        }
+                    }
+                },
                 "invoicer": {
                     "type": "object",
                     "x-ms-summary": "Invoicer",

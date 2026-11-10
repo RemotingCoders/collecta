@@ -432,3 +432,6 @@ FodyWeavers.xsd
 .env.*
 !.env.example
 *.secret
+seed/.msal_token_cache.bin
+.venv/
+venv/
