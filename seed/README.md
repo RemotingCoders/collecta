@@ -38,9 +38,18 @@ idempotent: every step skips what already exists, so it can be run again at any 
   (all states, Paid included: Name, Customer, Total Amount, Due Date, PayPal Status, PayPal Amount Paid,
   PayPal Amount Due, PayPal Sent On, PayPal Invoice ID; sorted by Due Date), set as the default view of
   Invoice. Everything is published.
+- Descriptions for AI assistants: every `rc_` column, every option of `rc_paypalstatus` and the PayPal Payment
+  table carry an English description that spells out meaning, units (USD) and allowed values, because Copilot in
+  Dynamics 365 and Copilot Studio read them (texts in `seed.py`, `INVOICE_DESCRIPTIONS` and friends). The native
+  **Due Date** column keeps its own description; the seed would only fill it if it were empty.
+- Search: `rc_paypalstatus`, `rc_paypalinvoiceid` and `rc_paypalamountdue` are find columns of the Invoice
+  **Quick Find** view (Dataverse search matches on the text and choice columns; the currency column only makes
+  the symbol show in results). Dataverse search is turned on for the environment and for the Invoice and PayPal
+  Payment tables.
 - Solution hygiene: the Invoice table is added to the solution **without** subcomponents
   (`AddSolutionComponent` with `DoNotIncludeSubcomponents = true`), then only the `rc_` columns, the modified
-  main form and the "PayPal Invoices" view are added. `rc_paypalpayment` is added with all its subcomponents (columns, key, view).
+  main form, the "PayPal Invoices" view and the Quick Find view are added. `rc_paypalpayment` is added with all
+  its subcomponents (columns, key, view).
 - Security role **Collecta Reviewer** (root business unit, in the solution): Read at Organization level on
   Account, Contact, Invoice, Invoice Product, Price List, Currency and PayPal Payment, nothing else. Invoice
   Product has no privileges of its own and follows Invoice. The role is assigned to `COLLECTA_REVIEWER_USER`
@@ -177,3 +186,8 @@ form, view and price list stay.
 - If the PayPal part fails after the Dynamics invoice was created, run the script again: an invoice that
   should be in PayPal but has no `rc_paypalinvoiceid` is sent on the next run.
 - The script talks to the PayPal **sandbox** only; the host is fixed in `paypal_sandbox.py`.
+- Metadata is updated with `PUT` of the whole definition and `MSCRM.MergeLabels: true` (Dataverse has no `PATCH`
+  for columns and tables); option descriptions go through `UpdateOptionValue`. Only what differs is written.
+- A Quick Find view update has to repeat `returnedtypecode` and `querytype` next to `fetchxml`, or Dataverse
+  answers `0x80040216`; the update itself takes a few minutes, so the seed waits up to 10.
+- Dataverse search can take up to 15 minutes to index the new find columns after the run.

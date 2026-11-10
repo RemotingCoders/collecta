@@ -90,7 +90,8 @@ class Dataverse:
         self.http = session or requests.Session()
 
     # -- plumbing ---------------------------------------------------------------------------------
-    def request(self, method: str, path: str, body: Any = None, headers: Optional[dict] = None, ok: tuple = (200, 201, 204)) -> requests.Response:
+    def request(self, method: str, path: str, body: Any = None, headers: Optional[dict] = None, ok: tuple = (200, 201, 204),
+                timeout: int = 120) -> requests.Response:
         h = {
             "Authorization": "Bearer " + self.token_provider(),
             "OData-MaxVersion": "4.0",
@@ -102,7 +103,7 @@ class Dataverse:
         if headers:
             h.update(headers)
         url = path if path.startswith("http") else self.base + path
-        resp = self.http.request(method, url, data=json.dumps(body) if body is not None else None, headers=h, timeout=120)
+        resp = self.http.request(method, url, data=json.dumps(body) if body is not None else None, headers=h, timeout=timeout)
         if resp.status_code not in ok:
             code, message = "", resp.text[:800]
             try:
@@ -184,6 +185,33 @@ class Dataverse:
 
     def attribute_metadata_id(self, entity: str, logical_name: str) -> str:
         return self.get("EntityDefinitions(LogicalName='%s')/Attributes(LogicalName='%s')?$select=MetadataId" % (entity, logical_name))["MetadataId"]
+
+    def attribute(self, entity: str, logical_name: str, expand_options: bool = False) -> dict:
+        """The whole definition of a column, with its @odata.type. expand_options adds the OptionSet of a choice column."""
+        path = "EntityDefinitions(LogicalName='%s')/Attributes(LogicalName='%s')" % (entity, logical_name)
+        if expand_options:
+            path += "/Microsoft.Dynamics.CRM.PicklistAttributeMetadata?$expand=OptionSet"
+        return self.get(path)
+
+    def update_attribute(self, entity: str, definition: dict, solution: str) -> None:
+        """Metadata has no PATCH: PUT the whole definition back (as retrieved by attribute(), with the changed properties).
+        MergeLabels keeps labels in languages the definition does not mention. Options of a choice are not part of it."""
+        self.request("PUT", "EntityDefinitions(LogicalName='%s')/Attributes(LogicalName='%s')" % (entity, definition["LogicalName"]),
+                     _for_put(definition), {"MSCRM.SolutionUniqueName": solution, "MSCRM.MergeLabels": "true"})
+
+    def entity(self, logical_name: str) -> dict:
+        """The whole definition of a table (without its columns, keys and relationships)."""
+        return self.get("EntityDefinitions(LogicalName='%s')" % logical_name)
+
+    def update_entity(self, definition: dict, solution: str) -> None:
+        self.request("PUT", "EntityDefinitions(LogicalName='%s')" % definition["LogicalName"], _for_put(definition),
+                     {"MSCRM.SolutionUniqueName": solution, "MSCRM.MergeLabels": "true"})
+
+    def update_option(self, entity: str, attribute: str, value: int, label_text: str, description: str, solution: str) -> None:
+        """Label and description of one option of a local choice column (UpdateOptionValue)."""
+        self.action("UpdateOptionValue", {"EntityLogicalName": entity, "AttributeLogicalName": attribute, "Value": value,
+                                          "Label": label(label_text), "Description": label(description), "MergeLabels": True,
+                                          "SolutionUniqueName": solution})
 
     def create_entity(self, payload: dict, solution: str) -> None:
         self.request("POST", "EntityDefinitions", payload, {"MSCRM.SolutionUniqueName": solution, "If-None-Match": "null"})
@@ -275,6 +303,29 @@ class Dataverse:
 def label(text: str) -> dict:
     loc = {"@odata.type": "Microsoft.Dynamics.CRM.LocalizedLabel", "Label": text, "LanguageCode": LANGUAGE_CODE, "IsManaged": False}
     return {"@odata.type": "Microsoft.Dynamics.CRM.Label", "LocalizedLabels": [loc], "UserLocalizedLabel": dict(loc)}
+
+
+def label_text(meta_label: Optional[dict]) -> str:
+    """The text of a metadata Label as retrieved from the API (UserLocalizedLabel, or the first localized label)."""
+    meta_label = meta_label or {}
+    user = meta_label.get("UserLocalizedLabel") or {}
+    if user.get("Label"):
+        return user["Label"]
+    localized = meta_label.get("LocalizedLabels") or []
+    return localized[0].get("Label", "") if localized else ""
+
+
+_READ_ONLY_COLLECTIONS = ("Privileges", "Attributes", "Keys", "OneToManyRelationships", "ManyToOneRelationships", "ManyToManyRelationships")
+
+
+def _for_put(definition: dict) -> dict:
+    """A retrieved definition as the PUT body expects it: no @odata.context, the type without the leading '#',
+    and none of the read-only collections (privileges, expanded columns)."""
+    body = {k: v for k, v in definition.items() if not k.startswith("@odata.") and k not in _READ_ONLY_COLLECTIONS}
+    odata_type = definition.get("@odata.type")
+    if odata_type:
+        body["@odata.type"] = odata_type.lstrip("#")
+    return body
 
 
 def _common(schema_name: str, display: str, description: str) -> dict:
@@ -415,8 +466,9 @@ COMPONENT_SAVED_QUERY = 26
 COMPONENT_SYSTEM_FORM = 60
 
 
-def choice_column(schema_name: str, display: str, description: str, options: list) -> dict:
-    """options: list of (value, label)."""
+def choice_column(schema_name: str, display: str, description: str, options: list, option_descriptions: Optional[dict] = None) -> dict:
+    """options: list of (value, label). option_descriptions: label -> description, for the options that have one."""
+    option_descriptions = option_descriptions or {}
     d = _common(schema_name, display, description)
     d.update({
         "@odata.type": "Microsoft.Dynamics.CRM.PicklistAttributeMetadata",
@@ -427,7 +479,8 @@ def choice_column(schema_name: str, display: str, description: str, options: lis
             "@odata.type": "Microsoft.Dynamics.CRM.OptionSetMetadata",
             "IsGlobal": False,
             "OptionSetType": "Picklist",
-            "Options": [{"Value": value, "Label": label(text)} for value, text in options],
+            "Options": [dict({"Value": value, "Label": label(text)}, **({"Description": label(option_descriptions[text])} if text in option_descriptions else {}))
+                        for value, text in options],
         },
     })
     return d

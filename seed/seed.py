@@ -6,7 +6,9 @@ What it does (every step skips what already exists, so it can be re-run):
      to the solution without subcomponents, then only the rc_ columns, the modified main form and the view.
      New table "PayPal Payment" (rc_paypalpayment, child of Invoice, cascade delete, alternate key on the
      PayPal transaction ID), a "PayPal" tab with the rc_ columns and a payments subgrid on the Invoice main
-     form, an "Active PayPal Payments" view, and publish.
+     form, an "Active PayPal Payments" view, and publish. Every rc_ column, option and table gets a description
+     written for Copilot; the PayPal columns become find columns of the Invoice Quick Find view and Dataverse
+     search is turned on for the environment and both tables.
   2. Reference data: price list "Collecta USD".
   3. Five demo accounts with a primary contact and one invoice each. Three invoices are also created and sent in
      the PayPal sandbox (back-dated, NET_10, partial payments allowed). Northwind is paid in full, Fabrikam
@@ -28,7 +30,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from dataverse import (COMPONENT_ATTRIBUTE, COMPONENT_ENTITY, COMPONENT_ROLE, COMPONENT_SAVED_QUERY, COMPONENT_SYSTEM_FORM, Dataverse, DataverseError,
-                       choice_column, date_only_column, datetime_column, entity_definition, memo_column, money_column,
+                       choice_column, date_only_column, datetime_column, entity_definition, label, label_text, memo_column, money_column,
                        msal_token_provider, one_to_many, primary_name_column, text_column, url_column)
 from paypal_sandbox import PayPalError, PayPalSandbox
 
@@ -78,6 +80,47 @@ REVIEWER_USER = "judge@remotingcoders.com"
 PAYPAL_METHOD_TO_LABEL = {"PAYPAL": "PayPal", "BANK_TRANSFER": "Bank transfer", "CASH": "Cash", "CHECK": "Check", "CREDIT_CARD": "Credit card",
                           "DEBIT_CARD": "Debit card", "WIRE_TRANSFER": "Wire transfer", "OTHER": "Other"}
 PAYPAL_TYPE_TO_LABEL = {"PAYPAL": "PayPal", "EXTERNAL": "External"}
+
+# Descriptions of the Collecta tables and columns. Copilot in Dynamics 365 and Copilot Studio read them, so they spell
+# out meaning, units and allowed values. Used when the schema is created and re-applied by ensure_descriptions().
+INVOICE_DESCRIPTIONS = {
+    "rc_paypalinvoiceid": "PayPal invoice ID (format INV2-XXXX-XXXX-XXXX-XXXX) of the PayPal invoice created for this Dynamics 365 invoice. "
+                          "Empty when the invoice has not been sent through PayPal.",
+    "rc_paypalstatus": "Payment status of this invoice in PayPal, synchronized from PayPal (the source of truth). Not sent = never sent through "
+                       "PayPal; Draft; Sent = sent and unpaid; Unpaid; Partially paid = some payments received, balance still due; Paid = fully "
+                       "paid; Cancelled. An invoice is 'unpaid' or 'owed' when the status is Sent, Unpaid or Partially paid.",
+    "rc_paypalpaymenturl": "Link the customer uses to view and pay the PayPal invoice.",
+    "rc_paypalsenton": "Date the invoice was sent to the customer through PayPal.",
+    "rc_paypalamountpaid": "Total amount paid so far on the PayPal invoice, in USD (sum of all PayPal payments).",
+    "rc_paypalamountdue": "Balance still owed on the PayPal invoice, in USD. Greater than zero means the customer still owes money.",
+}
+STATUS_OPTION_DESCRIPTIONS = {
+    "Not sent": "The invoice has not been sent through PayPal; no PayPal invoice exists for it. Nothing is tracked in PayPal yet.",
+    "Draft": "A PayPal invoice exists but has not been sent to the customer (PayPal status DRAFT). The customer cannot pay it yet.",
+    "Sent": "Sent to the customer through PayPal and not paid (PayPal status SENT, SCHEDULED, SHARED or PAYMENT_PENDING). The full amount is owed.",
+    "Unpaid": "Sent through PayPal and still unpaid (PayPal status UNPAID). The full amount is owed.",
+    "Partially paid": "One or more payments received, balance still due (PayPal status PARTIALLY_PAID or MARKED_AS_PARTIALLY_PAID). "
+                      "The customer still owes the PayPal Amount Due.",
+    "Paid": "Fully paid (PayPal status PAID, MARKED_AS_PAID or PAID_EXTERNAL). Nothing is owed; the Dynamics 365 invoice is closed as Paid. "
+            "Refunded invoices also show Paid.",
+    "Cancelled": "The PayPal invoice was cancelled (PayPal status CANCELLED or AUTO_CANCELLED). Nothing is owed through PayPal.",
+}
+# Applied to the native Due Date column only when it has no description of its own.
+DUEDATE_DESCRIPTION = "Date the payment is due. Invoices past this date with an amount due are overdue."
+PAYMENT_TABLE_DESCRIPTION = ("A payment received against a Dynamics 365 invoice through PayPal (or recorded in PayPal as an external payment such "
+                             "as a bank transfer). One invoice can have several payments (partial payments).")
+PAYMENT_DESCRIPTIONS = {
+    "rc_name": "Readable label: invoice, amount and payment date.",
+    "rc_invoiceid": "Invoice this payment applies to.",
+    "rc_transactionid": "Unique PayPal payment/transaction ID. Alternate key, prevents duplicates.",
+    "rc_amount": "Amount of this payment in USD.",
+    "rc_paymentdate": "Date and time the payment was made.",
+    "rc_method": "How the customer paid (PayPal, bank transfer, cash, check, card, wire, other).",
+    "rc_paymenttype": "PayPal = paid through PayPal; External = payment made outside PayPal and recorded on the PayPal invoice.",
+    "rc_note": "Optional note recorded with the payment.",
+}
+# Find columns added to the Invoice Quick Find view (what Quick Find and Dataverse search match on).
+QUICK_FIND_COLUMNS = ["rc_paypalstatus", "rc_paypalinvoiceid", "rc_paypalamountdue"]
 
 # Invoice statecode / statuscode (Dynamics 365 Sales)
 INVOICE_ACTIVE_BILLED = (0, 4)
@@ -214,23 +257,25 @@ def ensure_schema(dv: Dataverse, solution_id: str, option_prefix: int) -> None:
 
     # -- Invoice: the table itself without subcomponents, then only our columns
     ensure_component(dv, solution_id, dv.entity_info("invoice")["MetadataId"], COMPONENT_ENTITY, False, "Table invoice")
+    inv_desc = INVOICE_DESCRIPTIONS
     changed |= ensure_columns(dv, solution_id, "invoice", [
-        ("rc_paypalinvoiceid", text_column("rc_paypalinvoiceid", "PayPal Invoice ID", "The ID of the invoice in PayPal (INV2-...).", 50)),
-        ("rc_paypalstatus", choice_column("rc_paypalstatus", "PayPal Status", "The status of the invoice in PayPal.",
-                                          [(base + i, text) for i, text in enumerate(STATUS_LABELS)])),
-        ("rc_paypalpaymenturl", url_column("rc_paypalpaymenturl", "PayPal Payment URL", "The link the customer opens to view and pay the invoice in PayPal.")),
-        ("rc_paypalsenton", date_only_column("rc_paypalsenton", "PayPal Sent On", "The date the invoice was sent through PayPal.")),
-        ("rc_paypalamountpaid", money_column("rc_paypalamountpaid", "PayPal Amount Paid", "The amount paid so far according to PayPal.")),
-        ("rc_paypalamountdue", money_column("rc_paypalamountdue", "PayPal Amount Due", "The amount still due according to PayPal.")),
+        ("rc_paypalinvoiceid", text_column("rc_paypalinvoiceid", "PayPal Invoice ID", inv_desc["rc_paypalinvoiceid"], 50)),
+        ("rc_paypalstatus", choice_column("rc_paypalstatus", "PayPal Status", inv_desc["rc_paypalstatus"],
+                                          [(base + i, text) for i, text in enumerate(STATUS_LABELS)], STATUS_OPTION_DESCRIPTIONS)),
+        ("rc_paypalpaymenturl", url_column("rc_paypalpaymenturl", "PayPal Payment URL", inv_desc["rc_paypalpaymenturl"])),
+        ("rc_paypalsenton", date_only_column("rc_paypalsenton", "PayPal Sent On", inv_desc["rc_paypalsenton"])),
+        ("rc_paypalamountpaid", money_column("rc_paypalamountpaid", "PayPal Amount Paid", inv_desc["rc_paypalamountpaid"])),
+        ("rc_paypalamountdue", money_column("rc_paypalamountdue", "PayPal Amount Due", inv_desc["rc_paypalamountdue"])),
     ])
 
     # -- PayPal Payment table, with all its subcomponents
+    pay_desc = PAYMENT_DESCRIPTIONS
     if dv.entity_exists(PAYMENT_ENTITY):
         log("exists", "Table %s" % PAYMENT_ENTITY)
     else:
         dv.create_entity(entity_definition(
-            PAYMENT_ENTITY, "PayPal Payment", "PayPal Payments", "A payment recorded in PayPal against an invoice.",
-            primary_name_column("rc_name", "Name", "Account, amount and date of the payment, for example Fabrikam Inc - $500.00 - 2026-11-03.")), SOLUTION_NAME)
+            PAYMENT_ENTITY, "PayPal Payment", "PayPal Payments", PAYMENT_TABLE_DESCRIPTION,
+            primary_name_column("rc_name", "Name", pay_desc["rc_name"])), SOLUTION_NAME)
         log("created", "Table %s (PayPal Payment)" % PAYMENT_ENTITY)
         changed = True
     payment_info = dv.entity_info(PAYMENT_ENTITY)
@@ -240,19 +285,18 @@ def ensure_schema(dv: Dataverse, solution_id: str, option_prefix: int) -> None:
         log("exists", "Relationship %s" % PAYMENT_RELATIONSHIP)
     else:
         dv.create_relationship(one_to_many(PAYMENT_RELATIONSHIP, "invoice", PAYMENT_ENTITY, "rc_invoiceid", "Invoice",
-                                           "The invoice this payment belongs to.", "PayPal Payments", delete_cascade="Cascade"), SOLUTION_NAME)
+                                           pay_desc["rc_invoiceid"], "PayPal Payments", delete_cascade="Cascade"), SOLUTION_NAME)
         log("created", "Relationship %s (lookup rc_invoiceid, cascade delete)" % PAYMENT_RELATIONSHIP)
         changed = True
 
     # The payment table is in the solution with all subcomponents, so its columns and views travel with it.
     changed |= ensure_columns(dv, solution_id, PAYMENT_ENTITY, [
-        ("rc_transactionid", text_column("rc_transactionid", "Transaction ID", "The PayPal payment or transaction ID. Unique per payment.", 50)),
-        ("rc_amount", money_column("rc_amount", "Amount", "The amount of the payment.")),
-        ("rc_paymentdate", datetime_column("rc_paymentdate", "Payment Date", "When the payment was made.")),
-        ("rc_method", choice_column("rc_method", "Method", "How the payment was made.", [(base + i, text) for i, text in enumerate(METHOD_LABELS)])),
-        ("rc_paymenttype", choice_column("rc_paymenttype", "Payment Type", "PayPal for a payment made through PayPal, External for a payment recorded by hand.",
-                                         [(base + i, text) for i, text in enumerate(TYPE_LABELS)])),
-        ("rc_note", memo_column("rc_note", "Note", "The note recorded with the payment.")),
+        ("rc_transactionid", text_column("rc_transactionid", "Transaction ID", pay_desc["rc_transactionid"], 50)),
+        ("rc_amount", money_column("rc_amount", "Amount", pay_desc["rc_amount"])),
+        ("rc_paymentdate", datetime_column("rc_paymentdate", "Payment Date", pay_desc["rc_paymentdate"])),
+        ("rc_method", choice_column("rc_method", "Method", pay_desc["rc_method"], [(base + i, text) for i, text in enumerate(METHOD_LABELS)])),
+        ("rc_paymenttype", choice_column("rc_paymenttype", "Payment Type", pay_desc["rc_paymenttype"], [(base + i, text) for i, text in enumerate(TYPE_LABELS)])),
+        ("rc_note", memo_column("rc_note", "Note", pay_desc["rc_note"])),
     ], track_components=False)
 
     status = dv.key_status(PAYMENT_ENTITY, PAYMENT_KEY)
@@ -269,6 +313,11 @@ def ensure_schema(dv: Dataverse, solution_id: str, option_prefix: int) -> None:
     invoice_view_id, invoice_view_changed = ensure_invoice_view(dv, dv.entity_info("invoice")["ObjectTypeCode"])
     ensure_component(dv, solution_id, invoice_view_id, COMPONENT_SAVED_QUERY, False, "View '%s'" % INVOICE_VIEW_NAME)
     changed |= view_changed or form_changed or invoice_view_changed
+
+    # -- Descriptions for Copilot, Quick Find columns and Dataverse search
+    changed |= ensure_descriptions(dv)
+    changed |= ensure_quick_find(dv, solution_id)
+    changed |= ensure_dataverse_search(dv)
 
     if changed:
         dv.publish("invoice", PAYMENT_ENTITY)
@@ -337,6 +386,117 @@ def ensure_invoice_view(dv: Dataverse, object_type_code: int) -> tuple:
                                      "fetchxml": fetch, "layoutxml": layout}, SOLUTION_NAME)
     log("created", "View '%s' (default view of Invoice)" % INVOICE_VIEW_NAME)
     return vid, True
+
+
+def ensure_description(dv: Dataverse, entity: str, logical_name: str, text: str) -> bool:
+    """Sets the description of a column when it differs from text. Returns True when it was updated."""
+    meta = dv.attribute(entity, logical_name)
+    if label_text(meta.get("Description")) == text:
+        return False
+    meta["Description"] = label(text)
+    dv.update_attribute(entity, meta, SOLUTION_NAME)
+    log("updated", "Description of %s.%s" % (entity, logical_name))
+    return True
+
+
+def ensure_descriptions(dv: Dataverse) -> bool:
+    """Rich English descriptions on the Collecta table, columns and choice options (read by Copilot). Only writes what differs."""
+    changed = False
+    for name, text in INVOICE_DESCRIPTIONS.items():
+        changed |= ensure_description(dv, "invoice", name, text)
+
+    for opt in dv.attribute("invoice", "rc_paypalstatus", expand_options=True)["OptionSet"]["Options"]:
+        opt_label = label_text(opt.get("Label"))
+        wanted = STATUS_OPTION_DESCRIPTIONS.get(opt_label)
+        if wanted and label_text(opt.get("Description")) != wanted:
+            dv.update_option("invoice", "rc_paypalstatus", opt["Value"], opt_label, wanted, SOLUTION_NAME)
+            log("updated", "Description of option '%s' (%d) of invoice.rc_paypalstatus" % (opt_label, opt["Value"]))
+            changed = True
+
+    due = dv.attribute("invoice", "duedate")
+    current = label_text(due.get("Description"))
+    if current:
+        log("exists", "invoice.duedate already has a description, left as it is: \"%s\"" % current)
+    else:
+        due["Description"] = label(DUEDATE_DESCRIPTION)
+        dv.update_attribute("invoice", due, SOLUTION_NAME)
+        log("updated", "Description of invoice.duedate (was empty)")
+        changed = True
+
+    table = dv.entity(PAYMENT_ENTITY)
+    if label_text(table.get("Description")) != PAYMENT_TABLE_DESCRIPTION:
+        table["Description"] = label(PAYMENT_TABLE_DESCRIPTION)
+        dv.update_entity(table, SOLUTION_NAME)
+        log("updated", "Description of table %s" % PAYMENT_ENTITY)
+        changed = True
+    for name, text in PAYMENT_DESCRIPTIONS.items():
+        changed |= ensure_description(dv, PAYMENT_ENTITY, name, text)
+
+    if not changed:
+        log("exists", "Descriptions of the Collecta tables, columns and options are up to date")
+    return changed
+
+
+def ensure_quick_find(dv: Dataverse, solution_id: str) -> bool:
+    """Adds the PayPal columns as find columns of the Invoice Quick Find view and puts the view in the solution.
+    Find columns drive Quick Find and the Dataverse search index (text, choice and lookup columns are searchable; a
+    currency column is not matched but makes the currency symbol show in the results)."""
+    row = dv.first("savedqueries", "returnedtypecode eq 'invoice' and querytype eq 4 and isquickfindquery eq true", "savedqueryid,name,fetchxml,isdefault")
+    if not row:
+        log("warn", "Invoice has no Quick Find view; find columns were not added")
+        return False
+    root = ET.fromstring(row["fetchxml"])
+    entity = root.find("entity")
+    find_filter = next((f for f in entity.findall("filter") if f.get("isquickfindfields") == "1"), None)
+    if find_filter is None:
+        find_filter = ET.SubElement(entity, "filter", type="or", isquickfindfields="1")
+    present = {c.get("attribute") for c in find_filter.findall("condition")}
+    missing = [c for c in QUICK_FIND_COLUMNS if c not in present]
+    ensure_component(dv, solution_id, row["savedqueryid"], COMPONENT_SAVED_QUERY, False, "View '%s'" % row["name"])
+    if not row.get("isdefault"):
+        log("warn", "View '%s' is not the default Quick Find view; Dataverse search only indexes the default one" % row["name"])
+    if not missing:
+        log("exists", "View '%s' already finds by %s" % (row["name"], ", ".join(QUICK_FIND_COLUMNS)))
+        return False
+    for column in missing:
+        ET.SubElement(find_filter, "condition", attribute=column, operator="like", value="{0}")
+    # A Quick Find view update must repeat the table and query type, otherwise Dataverse fails with 0x80040216
+    # (NullReferenceException in QuickFindUtil.FixQuickFindFilter). The update also takes a few minutes.
+    dv.request("PATCH", "savedqueries(%s)" % row["savedqueryid"],
+               {"fetchxml": ET.tostring(root, encoding="unicode"), "returnedtypecode": "invoice", "querytype": 4},
+               {"If-Match": "*"}, timeout=600)
+    log("updated", "View '%s': added find columns %s" % (row["name"], ", ".join(missing)))
+    return True
+
+
+def ensure_dataverse_search(dv: Dataverse) -> bool:
+    """Dataverse search (used by Copilot and global search): the environment switch and the two tables. Only reports
+    what it cannot change."""
+    changed = False
+    org = dv.get("organizations?$select=organizationid,isexternalsearchindexenabled")["value"][0]
+    if org.get("isexternalsearchindexenabled"):
+        log("exists", "Dataverse search is on for the environment")
+    else:
+        try:
+            dv.update("organizations", org["organizationid"], {"isexternalsearchindexenabled": True})
+            log("updated", "Dataverse search turned on for the environment (organization.isexternalsearchindexenabled)")
+        except DataverseError as exc:
+            log("warn", "Could not turn on Dataverse search for the environment (%s). Turn it on in the Power Platform admin center: "
+                        "Environments > Settings > Features > Dataverse search" % exc)
+    for name in ("invoice", PAYMENT_ENTITY):
+        table = dv.entity(name)
+        if table.get("SyncToExternalSearchIndex"):
+            log("exists", "Table %s is enabled for Dataverse search" % name)
+            continue
+        can = table.get("CanEnableSyncToExternalSearchIndex") or {}
+        if not can.get("Value") or not can.get("CanBeChanged", True):
+            log("warn", "Table %s cannot be enabled for Dataverse search (CanEnableSyncToExternalSearchIndex)" % name)
+            continue
+        table["SyncToExternalSearchIndex"] = True
+        dv.update_entity(table, SOLUTION_NAME)
+        log("updated", "Table %s enabled for Dataverse search (SyncToExternalSearchIndex)" % name)
+        changed = True
+    return changed
 
 
 # Form control class IDs (classic form XML)
