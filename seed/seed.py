@@ -27,7 +27,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-from dataverse import (COMPONENT_ATTRIBUTE, COMPONENT_ENTITY, COMPONENT_ROLE, COMPONENT_SYSTEM_FORM, Dataverse, DataverseError,
+from dataverse import (COMPONENT_ATTRIBUTE, COMPONENT_ENTITY, COMPONENT_ROLE, COMPONENT_SAVED_QUERY, COMPONENT_SYSTEM_FORM, Dataverse, DataverseError,
                        choice_column, date_only_column, datetime_column, entity_definition, memo_column, money_column,
                        msal_token_provider, one_to_many, primary_name_column, text_column, url_column)
 from paypal_sandbox import PayPalError, PayPalSandbox
@@ -52,6 +52,7 @@ PAYMENT_SET = "rc_paypalpayments"
 PAYMENT_RELATIONSHIP = "rc_invoice_rc_paypalpayment"
 PAYMENT_KEY = "rc_transactionid_key"
 VIEW_NAME = "Active PayPal Payments"
+INVOICE_VIEW_NAME = "PayPal Invoices"
 FORM_TAB = "tab_paypal"
 
 STATUS_LABELS = ["Not sent", "Draft", "Sent", "Unpaid", "Partially paid", "Paid", "Cancelled"]
@@ -265,7 +266,9 @@ def ensure_schema(dv: Dataverse, solution_id: str, option_prefix: int) -> None:
     view_id, view_changed = ensure_view(dv, payment_info["ObjectTypeCode"])  # a subcomponent of rc_paypalpayment, already in the solution
     form_id, form_changed = ensure_form(dv, view_id)
     ensure_component(dv, solution_id, form_id, COMPONENT_SYSTEM_FORM, False, "Invoice main form")
-    changed |= view_changed or form_changed
+    invoice_view_id, invoice_view_changed = ensure_invoice_view(dv, dv.entity_info("invoice")["ObjectTypeCode"])
+    ensure_component(dv, solution_id, invoice_view_id, COMPONENT_SAVED_QUERY, False, "View '%s'" % INVOICE_VIEW_NAME)
+    changed |= view_changed or form_changed or invoice_view_changed
 
     if changed:
         dv.publish("invoice", PAYMENT_ENTITY)
@@ -296,6 +299,43 @@ def ensure_view(dv: Dataverse, object_type_code: int) -> tuple:
     vid = dv.create("savedqueries", {"name": VIEW_NAME, "returnedtypecode": PAYMENT_ENTITY, "querytype": 0, "isdefault": True,
                                      "description": "Active payments recorded in PayPal.", "fetchxml": fetch, "layoutxml": layout}, SOLUTION_NAME)
     log("created", "View '%s'" % VIEW_NAME)
+    return vid, True
+
+
+INVOICE_VIEW_COLUMNS = [("name", 220), ("customerid", 180), ("totalamount", 110), ("duedate", 110), ("rc_paypalstatus", 120),
+                        ("rc_paypalamountpaid", 120), ("rc_paypalamountdue", 120), ("rc_paypalsenton", 110), ("rc_paypalinvoiceid", 200)]
+
+
+def ensure_invoice_view(dv: Dataverse, object_type_code: int) -> tuple:
+    """Public view 'PayPal Invoices' on Invoice: every state (Paid included), sorted by due date, set as the default view."""
+    fetch = ('<fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false"><entity name="invoice">'
+             '%s<attribute name="invoiceid" /><order attribute="duedate" descending="false" /></entity></fetch>'
+             % "".join('<attribute name="%s" />' % c for c, _ in INVOICE_VIEW_COLUMNS))
+    layout = ('<grid name="resultset" object="%d" jump="name" select="1" icon="1" preview="1"><row name="result" id="invoiceid">%s</row></grid>'
+              % (object_type_code, "".join('<cell name="%s" width="%d" />' % (c, w) for c, w in INVOICE_VIEW_COLUMNS)))
+    row = dv.first("savedqueries", "returnedtypecode eq 'invoice' and querytype eq 0 and name eq '%s'" % INVOICE_VIEW_NAME, "savedqueryid,layoutxml,isdefault")
+    # Only one public view should be the default; the platform does not clear the flag on the others by itself.
+    changed = False
+    for other in dv.query("savedqueries", "returnedtypecode eq 'invoice' and querytype eq 0 and isdefault eq true and name ne '%s'" % INVOICE_VIEW_NAME, "savedqueryid,name"):
+        dv.update("savedqueries", other["savedqueryid"], {"isdefault": False})
+        log("updated", "View '%s' is no longer the default view of Invoice" % other["name"])
+        changed = True
+    if row:
+        if 'name="rc_paypalinvoiceid"' not in (row.get("layoutxml") or ""):
+            dv.update("savedqueries", row["savedqueryid"], {"fetchxml": fetch, "layoutxml": layout})
+            log("updated", "View '%s' (columns)" % INVOICE_VIEW_NAME)
+            changed = True
+        if not row.get("isdefault"):
+            dv.update("savedqueries", row["savedqueryid"], {"isdefault": True})
+            log("updated", "View '%s' is now the default view of Invoice" % INVOICE_VIEW_NAME)
+            changed = True
+        if not changed:
+            log("exists", "View '%s' (default view of Invoice)" % INVOICE_VIEW_NAME)
+        return row["savedqueryid"], changed
+    vid = dv.create("savedqueries", {"name": INVOICE_VIEW_NAME, "returnedtypecode": "invoice", "querytype": 0, "isdefault": True,
+                                     "description": "All invoices with their PayPal status, amounts and dates, sorted by due date.",
+                                     "fetchxml": fetch, "layoutxml": layout}, SOLUTION_NAME)
+    log("created", "View '%s' (default view of Invoice)" % INVOICE_VIEW_NAME)
     return vid, True
 
 

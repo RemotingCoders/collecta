@@ -34,10 +34,13 @@ idempotent: every step skips what already exists, so it can be run again at any 
   | `rc_note` | Multiline text | Note recorded with the payment |
 
 - UI: a **PayPal** tab on the Invoice main form with the `rc_` columns and a **PayPal Payments** subgrid,
-  and the **Active PayPal Payments** view with the payment columns. Everything is published.
+  the **Active PayPal Payments** view with the payment columns, and the public Invoice view **PayPal Invoices**
+  (all states, Paid included: Name, Customer, Total Amount, Due Date, PayPal Status, PayPal Amount Paid,
+  PayPal Amount Due, PayPal Sent On, PayPal Invoice ID; sorted by Due Date), set as the default view of
+  Invoice. Everything is published.
 - Solution hygiene: the Invoice table is added to the solution **without** subcomponents
-  (`AddSolutionComponent` with `DoNotIncludeSubcomponents = true`), then only the `rc_` columns and the modified
-  main form are added. `rc_paypalpayment` is added with all its subcomponents (columns, key, view).
+  (`AddSolutionComponent` with `DoNotIncludeSubcomponents = true`), then only the `rc_` columns, the modified
+  main form and the "PayPal Invoices" view are added. `rc_paypalpayment` is added with all its subcomponents (columns, key, view).
 - Security role **Collecta Reviewer** (root business unit, in the solution): Read at Organization level on
   Account, Contact, Invoice, Invoice Product, Price List, Currency and PayPal Payment, nothing else. Invoice
   Product has no privileges of its own and follows Invoice. The role is assigned to `COLLECTA_REVIEWER_USER`
