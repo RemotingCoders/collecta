@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{bef68a2e-c5dc-f111-84e8-7ced8d6f2f55}</savedqueryid>
+    <layoutxml>
+      <grid name="resultset" jump="name" select="1" icon="1" preview="1">
+        <row name="result" id="invoiceid">
+          <cell name="name" width="220" />
+          <cell name="customerid" width="180" />
+          <cell name="totalamount" width="110" />
+          <cell name="duedate" width="110" />
+          <cell name="rc_paypalstatus" width="120" />
+          <cell name="rc_paypalamountpaid" width="120" />
+          <cell name="rc_paypalamountdue" width="120" />
+          <cell name="rc_paypalsenton" width="110" />
+          <cell name="rc_paypalinvoiceid" width="200" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>0</querytype>
+    <fetchxml>
+      <fetch version="1.0" output-format="xml-platform" mapping="logical" distinct="false">
+        <entity name="invoice">
+          <attribute name="name" />
+          <attribute name="customerid" />
+          <attribute name="totalamount" />
+          <attribute name="duedate" />
+          <attribute name="rc_paypalstatus" />
+          <attribute name="rc_paypalamountpaid" />
+          <attribute name="rc_paypalamountdue" />
+          <attribute name="rc_paypalsenton" />
+          <attribute name="rc_paypalinvoiceid" />
+          <attribute name="invoiceid" />
+          <order attribute="duedate" descending="false" />
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0.0.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="PayPal Invoices" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="All invoices with their PayPal status, amounts and dates, sorted by due date." languagecode="1033" />
+    </Descriptions>
+  </savedquery>
+</savedqueries>

@@ -1,0 +1,11 @@
+<botcomponent_workflowset>
+  <botcomponent_workflow botcomponentid.schemaname="rc_collecta.action.BillinvoiceinPayPal" workflowid.workflowid="28c6ef24-2bdd-f111-84e8-70a8a5afd538">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+  <botcomponent_workflow botcomponentid.schemaname="rc_collecta.action.Getunpaidinvoices" workflowid.workflowid="2dc9dd52-d8dc-f111-84e8-7ced8d6f2f55">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+  <botcomponent_workflow botcomponentid.schemaname="rc_collecta.action.Previewinvoice" workflowid.workflowid="b0d07011-dedc-f111-84e8-70a8a5afd538">
+    <iscustomizable>1</iscustomizable>
+  </botcomponent_workflow>
+</botcomponent_workflowset>

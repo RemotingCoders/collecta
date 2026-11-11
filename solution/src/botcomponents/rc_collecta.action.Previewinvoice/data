@@ -1,0 +1,16 @@
+kind: TaskDialog
+modelDescription: "     Looks up open Dynamics 365 invoices for a customer (and optionally an invoice name) and returns the invoice ID, name, customer, customer email, total, due date, line items and whether it was already sent to PayPal. Use it before billing to show the user a summary and ask for confirmation."
+outputs:
+  - propertyName: invoices
+
+  - propertyName: count
+
+action:
+  kind: InvokeFlowTaskAction
+  flowId: b0d07011-dedc-f111-84e8-70a8a5afd538
+  connectionProperties:
+    $kind: ConnectionProperties
+    diagnostics:
+    mode: Invoker
+
+outputMode: All

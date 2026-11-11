@@ -1,0 +1,133 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "rc_sharedcommondataserviceforapps_a9876"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {},
+              "required": []
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764"
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_the_agent": {
+          "type": "Response",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "invoices": {
+                  "title": "invoices",
+                  "description": "",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "count": {
+                  "title": "count",
+                  "description": "",
+                  "type": "number",
+                  "x-ms-content-hint": "NUMBER",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "invoices": "@{string(body('Shape_invoices'))}",
+              "count": "@length(body('Shape_invoices'))"
+            }
+          },
+          "runAfter": {
+            "Shape_invoices": [
+              "SUCCEEDED"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81c94f73-dd52-465c-ad3b-a4686da63cc3"
+          }
+        },
+        "List_unpaid_invoices": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "invoices",
+              "$select": "     name,invoicenumber,totalamount,duedate,rc_paypalinvoiceid,rc_paypalstatus,rc_paypalamountpaid,rc_paypalamountdue,_customerid_value",
+              "$filter": "     statecode eq 0 and (rc_paypalstatus eq 710000002 or rc_paypalstatus eq 710000003 or rc_paypalstatus eq 710000004)",
+              "$orderby": "duedate asc"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {}
+        },
+        "Shape_invoices": {
+          "type": "Select",
+          "inputs": {
+            "from": "@outputs('List_unpaid_invoices')?['body/value']",
+            "select": {
+              "customer": "@{item()?['_customerid_value@OData.Community.Display.V1.FormattedValue']}",
+              "invoice": "@{item()?['name']}",
+              "invoiceNumber": "@{item()?['invoicenumber']}",
+              "paypalInvoiceId": "@{item()?['rc_paypalinvoiceid']}",
+              "paypalStatus": "@{item()?['rc_paypalstatus@OData.Community.Display.V1.FormattedValue']}",
+              "total": "@item()?['totalamount']",
+              "amountPaid": "@item()?['rc_paypalamountpaid']",
+              "amountDue": "@item()?['rc_paypalamountdue']",
+              "dueDate": "@{item()?['duedate']}",
+              "daysOverdue": "@if(empty(item()?['duedate']), 0, max(0, div(sub(ticks(utcNow()), ticks(item()?['duedate'])), 864000000000)))"
+            }
+          },
+          "runAfter": {
+            "List_unpaid_invoices": [
+              "SUCCEEDED"
+            ]
+          }
+        }
+      },
+      "outputs": {},
+      "description": "When an agent calls the flow and send back a response.",
+      "metadata": {
+        "defaultToEmbeddedConnections": true
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,321 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "rc_sharedcommondataserviceforapps_a9876"
+        },
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        }
+      },
+      "shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "rc_sharednew5fcollecta20paypal20sandbox5f39d8a180f3ea32ab_09662"
+        },
+        "api": {
+          "name": "shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab",
+          "logicalName": "new_collecta-20paypal-20sandbox"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "b8d49ff7-6fa2-424c-8a0c-03051d2e0b82"
+          },
+          "type": "Request",
+          "kind": "Http",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "event_type": {
+                  "type": "string"
+                },
+                "resource_type": {
+                  "type": "string"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "create_time": {
+                  "type": "string"
+                },
+                "resource": {
+                  "type": "object",
+                  "properties": {
+                    "invoice": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "id": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "triggerAuthenticationType": "All"
+          }
+        }
+      },
+      "actions": {
+        "PayPal_invoice_id": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "70398701-b9ea-4980-ab46-067a2e1609e9"
+          },
+          "type": "Compose",
+          "inputs": "@coalesce(triggerBody()?['resource']?['invoice']?['id'], triggerBody()?['resource']?['id'])"
+        },
+        "Find_invoice": {
+          "runAfter": {
+            "PayPal_invoice_id": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "68aaec9d-f55b-458b-a619-5cd130e6e4f3"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "invoices",
+              "$filter": "rc_paypalinvoiceid eq '@{outputs('PayPal_invoice_id')}'",
+              "$top": 1
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Get_PayPal_invoice": {
+          "runAfter": {
+            "Find_invoice": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "706901aa-8b67-4ada-9567-9334fe90339f"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab",
+              "operationId": "GetInvoice",
+              "apiId": ""
+            },
+            "parameters": {
+              "invoice_id": "@outputs('PayPal_invoice_id')"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Dataverse_invoice_id": {
+          "runAfter": {
+            "Get_PayPal_invoice": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "92308dd5-b7d3-4683-bb9f-d3dafed0933b"
+          },
+          "type": "Compose",
+          "inputs": "@first(outputs('Find_invoice')?['body/value'])?['invoiceid']"
+        },
+        "For_each_PayPal_payment": {
+          "foreach": "@coalesce(body('Get_PayPal_invoice')?['payments']?['transactions'], json('[]'))",
+          "actions": {
+            "Find_payment": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "669362f4-5ab2-444d-87da-e5a87adbd41b"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "ListRecords",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "rc_paypalpayments",
+                  "$filter": "@     concat('rc_transactionid eq ''', items('For_each_PayPal_payment')?['payment_id'], '''')",
+                  "$top": 1
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Is_new_payment": {
+              "actions": {
+                "Create_payment": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "38454815-56d1-4e72-9e68-41982b667a9f"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_commondataserviceforapps",
+                      "operationId": "CreateRecord",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                    },
+                    "parameters": {
+                      "entityName": "rc_paypalpayments",
+                      "item/rc_invoiceid@odata.bind": "@concat('invoices(', outputs('Dataverse_invoice_id'), ')')",
+                      "item/rc_amount": "@float(items('For_each_PayPal_payment')?['amount']?['value'])",
+                      "item/rc_method": "@coalesce(json('{\"PAYPAL\":710000000,\"BANK_TRANSFER\":710000001,\"CASH\":710000002,\"CHECK\":710000003,\"CREDIT_CARD\":710000004,\"DEBIT_CARD\":710000005,\"WIRE_TRANSFER\":710000006,\"OTHER\":710000007}')?[items('For_each_PayPal_payment')?['method']], 710000007)",
+                      "item/rc_name": "@concat(first(outputs('Find_invoice')?['body/value'])?['name'], ' - $', items('For_each_PayPal_payment')?['amount']?['value'], ' - ', substring(items('For_each_PayPal_payment')?['payment_date'], 0, 10))",
+                      "item/rc_note": "@items('For_each_PayPal_payment')?['note']",
+                      "item/rc_paymentdate": "@items('For_each_PayPal_payment')?['payment_date']",
+                      "item/rc_paymenttype": "@if(equals(items('For_each_PayPal_payment')?['type'], 'PAYPAL'), 710000000, 710000001)",
+                      "item/rc_transactionid": "@items('For_each_PayPal_payment')?['payment_id']"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                }
+              },
+              "runAfter": {
+                "Find_payment": [
+                  "Succeeded"
+                ]
+              },
+              "expression": {
+                "equals": [
+                  "@   empty(outputs('Find_payment')?['body/value'])",
+                  "@true"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "4905060a-eab3-499c-befc-fd90031c651e"
+              },
+              "type": "If"
+            }
+          },
+          "runAfter": {
+            "Dataverse_invoice_id": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "96e6a872-062f-4fc3-8698-70fcc6cba4e8"
+          },
+          "type": "Foreach"
+        },
+        "Response": {
+          "runAfter": {
+            "Is_fully_paid": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "4762dfc8-9c40-45e4-b550-3a50c19d34c6"
+          },
+          "type": "Response",
+          "kind": "Http",
+          "inputs": {
+            "statusCode": 200
+          }
+        },
+        "Update_invoice_totals": {
+          "runAfter": {
+            "For_each_PayPal_payment": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "dc6e5db6-87d9-4a4c-a53c-ee0f9b1b6497"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_commondataserviceforapps",
+              "operationId": "UpdateOnlyRecord",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+            },
+            "parameters": {
+              "entityName": "invoices",
+              "recordId": "@outputs('Dataverse_invoice_id')",
+              "item/duedate": "@body('Get_PayPal_invoice')?['detail']?['payment_term']?['due_date']",
+              "item/rc_paypalamountdue": "@float(coalesce(body('Get_PayPal_invoice')?['due_amount']?['value'], body('Get_PayPal_invoice')?['amount']?['value'], '0'))",
+              "item/rc_paypalamountpaid": "@float(coalesce(body('Get_PayPal_invoice')?['payments']?['paid_amount']?['value'], '0'))",
+              "item/rc_paypalstatus": "@json('{\"DRAFT\":710000001,\"SENT\":710000002,\"SCHEDULED\":710000002,\"UNPAID\":710000003,\"PAYMENT_PENDING\":710000003,\"PARTIALLY_PAID\":710000004,\"MARKED_AS_PARTIALLY_PAID\":710000004,\"PAID\":710000005,\"MARKED_AS_PAID\":710000005,\"CANCELLED\":710000006,\"REFUNDED\":710000006,\"MARKED_AS_REFUNDED\":710000006,\"PARTIALLY_REFUNDED\":710000004}')?[body('Get_PayPal_invoice')?['status']]"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Is_fully_paid": {
+          "actions": {
+            "Close_invoice_as_paid": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "a137e015-5327-416b-8743-be498d11fd0c"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_commondataserviceforapps",
+                  "operationId": "UpdateOnlyRecord",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps"
+                },
+                "parameters": {
+                  "entityName": "invoices",
+                  "recordId": "@outputs('Dataverse_invoice_id')",
+                  "item/statuscode": 100001,
+                  "item/statecode": 2
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Update_invoice_totals": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@   and(contains(createArray('PAID','MARKED_AS_PAID'), body('Get_PayPal_invoice')?['status']), not(equals(first(outputs('Find_invoice')?['body/value'])?['statecode'], 2)))",
+              "@true"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "89e3f29a-9635-447d-955c-64bc5b5389aa"
+          },
+          "type": "If"
+        }
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

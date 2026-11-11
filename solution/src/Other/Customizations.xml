@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26101.184" OrganizationSchemaType="Full" CRMServerServiceabilityVersion="9.2.26101.00184">
+  <Entities />
+  <Roles />
+  <Workflows />
+  <FieldSecurityProfiles />
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <CustomControls />
+  <EntityDataProviders />
+  <Connectors />
+  <connectionreferences>
+    <connectionreference connectionreferencelogicalname="rc_collecta.shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab.shared-new-5fcollect-f29102f2-11fb-4349-8bdd-55f593bde263">
+      <connectionreferencedisplayname>rc_collecta.shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab.shared-new-5fcollect-f29102f2-11fb-4349-8bdd-55f593bde263</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab</connectorid>
+      <customconnectorid>
+        <connectorid>fbca983e-17dc-f111-84e8-7ced8d6f2f55</connectorid>
+      </customconnectorid>
+      <iscustomizable>0</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="rc_sharedcommondataserviceforapps_a9876">
+      <connectionreferencedisplayname>Microsoft Dataverse Collecta-a9876</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="rc_sharednew5fcollecta20paypal20sandbox5f39d8a180f3ea32ab_09662">
+      <connectionreferencedisplayname>Collecta PayPal Sandbox Collecta-09662</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab</connectorid>
+      <customconnectorid>
+        <connectorid>fbca983e-17dc-f111-84e8-7ced8d6f2f55</connectorid>
+      </customconnectorid>
+      <iscustomizable>1</iscustomizable>
+      <promptingbehavior>0</promptingbehavior>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+  </connectionreferences>
+  <Languages>
+    <Language>1033</Language>
+  </Languages>
+</ImportExportXml>

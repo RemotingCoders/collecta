@@ -1,0 +1,393 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "rc_sharedcommondataserviceforapps_a9876"
+        },
+        "runtimeSource": "embedded"
+      },
+      "shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab": {
+        "api": {
+          "name": "shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab",
+          "logicalName": "new_collecta-20paypal-20sandbox"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "rc_sharednew5fcollecta20paypal20sandbox5f39d8a180f3ea32ab_09662"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "metadata": {
+        "defaultToEmbeddedConnections": true
+      },
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "metadata": {
+            "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764"
+          },
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "Dynamics 365 invoice ID (GUID) returned by Preview invoice. Only call after the user explicitly confirmed.",
+                  "title": "invoiceId",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text"
+              ]
+            }
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_the_agent": {
+          "runAfter": {
+            "Link_invoice_to_PayPal": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81c94f73-dd52-465c-ad3b-a4686da63cc3"
+          },
+          "type": "Response",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "result": {
+                  "title": "result",
+                  "description": "",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "paypalinvoiceid": {
+                  "title": "paypalInvoiceId",
+                  "description": "",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "paypalinvoicenumber": {
+                  "title": "paypalInvoiceNumber",
+                  "description": "",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "paymenturl": {
+                  "title": "paymentUrl",
+                  "description": "",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "total": {
+                  "title": "total",
+                  "description": "",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "sentto": {
+                  "title": "sentTo",
+                  "description": "",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "result": "SENT",
+              "paypalinvoiceid": "@{outputs('Create_PayPal_invoice')?['body/id']}",
+              "paypalinvoicenumber": "@{outputs('Next_PayPal_invoice_number')?['body/invoice_number']}",
+              "paymenturl": "@{outputs('Get_sent_PayPal_invoice')?['body/detail/metadata/recipient_view_url']}",
+              "total": "@{string(outputs('Get_invoice_to_bill')?['body/totalamount'])}",
+              "sentto": "@{outputs('Get_invoice_to_bill')?['body/customerid_account/emailaddress1']}"
+            }
+          }
+        },
+        "Get_invoice_to_bill": {
+          "runAfter": {},
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "invoices",
+              "recordId": "@triggerBody()?['text']",
+              "$select": "     invoiceid,name,invoicenumber,totalamount,duedate,rc_paypalinvoiceid",
+              "$expand": "     invoice_details($select=productdescription,quantity,priceperunit),customerid_account($select=name,emailaddress1)"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "GetItem",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          }
+        },
+        "Already_sent_to_PayPal": {
+          "actions": {
+            "Respond_to_the_agent_1": {
+              "type": "Response",
+              "kind": "Skills",
+              "inputs": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "result": {
+                      "title": "result",
+                      "description": "",
+                      "type": "string",
+                      "x-ms-content-hint": "TEXT",
+                      "x-ms-dynamically-added": true
+                    },
+                    "paypalinvoiceid": {
+                      "title": "paypalInvoiceId",
+                      "description": "",
+                      "type": "string",
+                      "x-ms-content-hint": "TEXT",
+                      "x-ms-dynamically-added": true
+                    },
+                    "paypalinvoicenumber": {
+                      "title": "paypalInvoiceNumber",
+                      "description": "",
+                      "type": "string",
+                      "x-ms-content-hint": "TEXT",
+                      "x-ms-dynamically-added": true
+                    },
+                    "paymenturl": {
+                      "title": "paymentUrl",
+                      "description": "",
+                      "type": "string",
+                      "x-ms-content-hint": "TEXT",
+                      "x-ms-dynamically-added": true
+                    },
+                    "total": {
+                      "title": "total",
+                      "description": "",
+                      "type": "string",
+                      "x-ms-content-hint": "TEXT",
+                      "x-ms-dynamically-added": true
+                    },
+                    "sentto": {
+                      "title": "sentTo",
+                      "description": "",
+                      "type": "string",
+                      "x-ms-content-hint": "TEXT",
+                      "x-ms-dynamically-added": true
+                    }
+                  },
+                  "additionalProperties": {}
+                },
+                "statusCode": 200,
+                "body": {
+                  "result": "     ALREADY_SENT: this invoice was already sent through PayPal. Offer a reminder instead.",
+                  "paypalinvoiceid": "-",
+                  "paypalinvoicenumber": "-",
+                  "paymenturl": "-",
+                  "total": "-",
+                  "sentto": "-"
+                }
+              }
+            },
+            "Terminate": {
+              "runAfter": {
+                "Respond_to_the_agent_1": [
+                  "Succeeded"
+                ]
+              },
+              "type": "Terminate",
+              "inputs": {
+                "runStatus": "Succeeded"
+              }
+            }
+          },
+          "runAfter": {
+            "Get_invoice_to_bill": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {}
+          },
+          "expression": {
+            "and": [
+              {
+                "equals": [
+                  "@   empty(outputs('Get_invoice_to_bill')?['body/rc_paypalinvoiceid'])",
+                  "@false"
+                ]
+              }
+            ]
+          },
+          "type": "If"
+        },
+        "Build_PayPal_items": {
+          "runAfter": {
+            "Already_sent_to_PayPal": [
+              "Succeeded"
+            ]
+          },
+          "type": "Select",
+          "inputs": {
+            "from": "@outputs('Get_invoice_to_bill')?['body/invoice_details']",
+            "select": {
+              "name": "@{item()?['productdescription']}",
+              "quantity": "@{string(item()?['quantity'])}",
+              "unit_amount": {
+                "currency_code": "USD",
+                "value": "@{formatNumber(item()?['priceperunit'], '0.00', 'en-US')}"
+              },
+              "unit_of_measure": "QUANTITY"
+            }
+          }
+        },
+        "Next_PayPal_invoice_number": {
+          "runAfter": {
+            "Build_PayPal_items": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "apiId": "",
+              "operationId": "GenerateNextInvoiceNumber",
+              "connectionName": "shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab"
+            }
+          }
+        },
+        "Create_PayPal_invoice": {
+          "runAfter": {
+            "Next_PayPal_invoice_number": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "body/detail/currency_code": "USD",
+              "body/items": "@body('Build_PayPal_items')",
+              "body/detail/payment_term/due_date": "@formatDateTime(coalesce(outputs('Get_invoice_to_bill')?['body/duedate'], addDays(utcNow(), 30)), 'yyyy-MM-dd')",
+              "body/detail/reference": "@outputs('Get_invoice_to_bill')?['body/invoicenumber']",
+              "body/detail/invoice_number": "@outputs('Next_PayPal_invoice_number')?['body/invoice_number']",
+              "body/detail/invoice_date": "@formatDateTime(utcNow(), 'yyyy-MM-dd')",
+              "body/detail/payment_term/term_type": "DUE_ON_DATE_SPECIFIED",
+              "body/detail/note": "Thank you for your business.",
+              "body/configuration/partial_payment/allow_partial_payment": true,
+              "body/invoicer/email_address": "sb-j6r6753788026@business.example.com",
+              "body/primary_recipients": [
+                {
+                  "billing_info": {
+                    "name": {
+                      "given_name": "@outputs('Get_invoice_to_bill')?['body/customerid_account/name']"
+                    },
+                    "email_address": "@outputs('Get_invoice_to_bill')?['body/customerid_account/emailaddress1']"
+                  }
+                }
+              ]
+            },
+            "host": {
+              "apiId": "",
+              "operationId": "CreateDraftInvoice",
+              "connectionName": "shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab"
+            }
+          }
+        },
+        "Send_PayPal_invoice": {
+          "runAfter": {
+            "Create_PayPal_invoice": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "invoice_id": "@outputs('Create_PayPal_invoice')?['body/id']",
+              "body/send_to_recipient": true
+            },
+            "host": {
+              "apiId": "",
+              "operationId": "SendInvoice",
+              "connectionName": "shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab"
+            }
+          }
+        },
+        "Get_sent_PayPal_invoice": {
+          "runAfter": {
+            "Send_PayPal_invoice": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "invoice_id": "@outputs('Create_PayPal_invoice')?['body/id']"
+            },
+            "host": {
+              "apiId": "",
+              "operationId": "GetInvoice",
+              "connectionName": "shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab"
+            }
+          }
+        },
+        "Link_invoice_to_PayPal": {
+          "runAfter": {
+            "Get_sent_PayPal_invoice": [
+              "Succeeded"
+            ]
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "invoices",
+              "recordId": "@triggerBody()?['text']",
+              "item/rc_paypalamountdue": "@outputs('Get_invoice_to_bill')?['body/totalamount']",
+              "item/rc_paypalamountpaid": 0,
+              "item/rc_paypalinvoiceid": "@outputs('Create_PayPal_invoice')?['body/id']",
+              "item/rc_paypalpaymenturl": "@outputs('Get_sent_PayPal_invoice')?['body/detail/metadata/recipient_view_url']",
+              "item/rc_paypalsenton": "@formatDateTime(utcNow(), 'yyyy-MM-dd')",
+              "item/rc_paypalstatus": 710000002
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "UpdateOnlyRecord",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          }
+        }
+      },
+      "outputs": {},
+      "description": "When an agent calls the flow and send back a response."
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

@@ -1,0 +1,16 @@
+kind: TaskDialog
+modelDescription: Returns all open invoices that were sent through PayPal and are not fully paid (Sent, Unpaid or Partially paid), with customer, PayPal invoice ID, total, amount paid, amount due, due date and days overdue. Use it to answer who owes money, what is overdue, or how much a customer still owes, and to get PayPal invoice IDs before sending reminders.
+outputs:
+  - propertyName: invoices
+
+  - propertyName: count
+
+action:
+  kind: InvokeFlowTaskAction
+  flowId: 2dc9dd52-d8dc-f111-84e8-7ced8d6f2f55
+  connectionProperties:
+    $kind: ConnectionProperties
+    diagnostics:
+    mode: Invoker
+
+outputMode: All

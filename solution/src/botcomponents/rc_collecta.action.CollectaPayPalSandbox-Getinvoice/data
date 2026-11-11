@@ -1,0 +1,79 @@
+kind: TaskDialog
+modelDisplayName: Get invoice
+modelDescription: Gets the full details of one invoice by its ID, including its status, amount due, amount paid, due date and the link the customer uses to pay. Useful to check whether an invoice has been paid.
+outputs:
+  - propertyName: amount.currency_code
+
+  - propertyName: amount.value
+
+  - propertyName: detail.currency_code
+
+  - propertyName: detail.invoice_date
+
+  - propertyName: detail.invoice_number
+
+  - propertyName: detail.memo
+
+  - propertyName: detail.metadata.cancel_time
+
+  - propertyName: detail.metadata.create_time
+
+  - propertyName: detail.metadata.first_sent_time
+
+  - propertyName: detail.metadata.invoicer_view_url
+
+  - propertyName: detail.metadata.last_sent_time
+
+  - propertyName: detail.metadata.last_update_time
+
+  - propertyName: detail.metadata.recipient_view_url
+
+  - propertyName: detail.note
+
+  - propertyName: detail.payment_term.due_date
+
+  - propertyName: detail.payment_term.term_type
+
+  - propertyName: detail.reference
+
+  - propertyName: due_amount.currency_code
+
+  - propertyName: due_amount.value
+
+  - propertyName: id
+
+  - propertyName: invoicer.business_name
+
+  - propertyName: invoicer.email_address
+
+  - propertyName: invoicer.name.given_name
+
+  - propertyName: invoicer.name.surname
+
+  - propertyName: items
+
+  - propertyName: links
+
+  - propertyName: payments.paid_amount.currency_code
+
+  - propertyName: payments.paid_amount.value
+
+  - propertyName: payments.transactions
+
+  - propertyName: primary_recipients
+
+  - propertyName: refunds.refund_amount.currency_code
+
+  - propertyName: refunds.refund_amount.value
+
+  - propertyName: status
+
+action:
+  kind: InvokeConnectorTaskAction
+  connectionReference: rc_collecta.shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab.shared-new-5fcollect-f29102f2-11fb-4349-8bdd-55f593bde263
+  connectionProperties:
+    mode: Invoker
+
+  operationId: GetInvoice
+
+outputMode: All

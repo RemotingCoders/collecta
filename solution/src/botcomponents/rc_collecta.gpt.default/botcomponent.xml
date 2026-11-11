@@ -1,0 +1,11 @@
+<botcomponent schemaname="rc_collecta.gpt.default">
+  <componenttype>15</componenttype>
+  <description>AI collections agent for Dynamics 365 Sales and PayPal: bills customers with PayPal invoices, tracks who owes money, sends payment reminders and keeps the CRM in sync.</description>
+  <iscustomizable>0</iscustomizable>
+  <name>Collecta</name>
+  <parentbotid>
+    <schemaname>rc_collecta</schemaname>
+  </parentbotid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</botcomponent>

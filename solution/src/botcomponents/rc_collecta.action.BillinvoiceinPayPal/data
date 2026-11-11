@@ -1,0 +1,24 @@
+kind: TaskDialog
+modelDescription: Creates and sends a PayPal invoice for one Dynamics 365 invoice, identified by the invoiceId (GUID) returned by Preview invoice, and saves the PayPal invoice ID, status, payment link and sent date on the Dynamics 365 invoice. Returns result (SENT or ALREADY_SENT), the PayPal invoice ID and number, the payment link, the total and the email it was sent to. ONLY call it after showing the summary from Preview invoice and getting an explicit yes from the user. If result is ALREADY_SENT, tell the user and offer to send a reminder instead.
+outputs:
+  - propertyName: result
+
+  - propertyName: paypalinvoiceid
+
+  - propertyName: paypalinvoicenumber
+
+  - propertyName: paymenturl
+
+  - propertyName: total
+
+  - propertyName: sentto
+
+action:
+  kind: InvokeFlowTaskAction
+  flowId: 28c6ef24-2bdd-f111-84e8-70a8a5afd538
+  connectionProperties:
+    $kind: ConnectionProperties
+    diagnostics:
+    mode: Invoker
+
+outputMode: All

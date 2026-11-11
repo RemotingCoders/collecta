@@ -1,0 +1,15 @@
+kind: TaskDialog
+modelDisplayName: Send invoice reminder
+modelDescription: Emails a payment reminder to the customer for an invoice that was sent and is still unpaid or partially paid. This is the collections follow-up action for overdue invoices. It does not work on draft, paid or cancelled invoices. PayPal allows only 2 reminders in a day.
+outputs:
+  - propertyName: Response
+
+action:
+  kind: InvokeConnectorTaskAction
+  connectionReference: rc_collecta.shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab.shared-new-5fcollect-f29102f2-11fb-4349-8bdd-55f593bde263
+  connectionProperties:
+    mode: Invoker
+
+  operationId: RemindInvoice
+
+outputMode: All

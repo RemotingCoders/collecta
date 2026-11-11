@@ -1,0 +1,445 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml version="9.2.26101.184" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.26101.184" OrganizationSchemaType="Full" CRMServerServiceabilityVersion="9.2.26101.00184">
+  <SolutionManifest>
+    <UniqueName>Collecta</UniqueName>
+    <LocalizedNames>
+      <LocalizedName description="Collecta" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="Collecta - AI collections agent powered by PayPal." languagecode="1033" />
+    </Descriptions>
+    <Version>1.0.0.0</Version>
+    <Managed>0</Managed>
+    <Publisher>
+      <UniqueName>RemotingCoders</UniqueName>
+      <LocalizedNames>
+        <LocalizedName description="Remoting Coders" languagecode="1033" />
+      </LocalizedNames>
+      <Descriptions>
+        <Description description="Publisher of the Collecta solution." languagecode="1033" />
+      </Descriptions>
+      <EMailAddress xsi:nil="true"></EMailAddress>
+      <SupportingWebsiteUrl xsi:nil="true"></SupportingWebsiteUrl>
+      <CustomizationPrefix>rc</CustomizationPrefix>
+      <CustomizationOptionValuePrefix>71000</CustomizationOptionValuePrefix>
+      <Addresses>
+        <Address>
+          <AddressNumber>1</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+        <Address>
+          <AddressNumber>2</AddressNumber>
+          <AddressTypeCode>1</AddressTypeCode>
+          <City xsi:nil="true"></City>
+          <County xsi:nil="true"></County>
+          <Country xsi:nil="true"></Country>
+          <Fax xsi:nil="true"></Fax>
+          <FreightTermsCode xsi:nil="true"></FreightTermsCode>
+          <ImportSequenceNumber xsi:nil="true"></ImportSequenceNumber>
+          <Latitude xsi:nil="true"></Latitude>
+          <Line1 xsi:nil="true"></Line1>
+          <Line2 xsi:nil="true"></Line2>
+          <Line3 xsi:nil="true"></Line3>
+          <Longitude xsi:nil="true"></Longitude>
+          <Name xsi:nil="true"></Name>
+          <PostalCode xsi:nil="true"></PostalCode>
+          <PostOfficeBox xsi:nil="true"></PostOfficeBox>
+          <PrimaryContactName xsi:nil="true"></PrimaryContactName>
+          <ShippingMethodCode>1</ShippingMethodCode>
+          <StateOrProvince xsi:nil="true"></StateOrProvince>
+          <Telephone1 xsi:nil="true"></Telephone1>
+          <Telephone2 xsi:nil="true"></Telephone2>
+          <Telephone3 xsi:nil="true"></Telephone3>
+          <TimeZoneRuleVersionNumber xsi:nil="true"></TimeZoneRuleVersionNumber>
+          <UPSZone xsi:nil="true"></UPSZone>
+          <UTCOffset xsi:nil="true"></UTCOffset>
+          <UTCConversionTimeZoneCode xsi:nil="true"></UTCConversionTimeZoneCode>
+        </Address>
+      </Addresses>
+    </Publisher>
+    <RootComponents>
+      <RootComponent type="1" schemaName="invoice" behavior="1" />
+      <RootComponent type="1" schemaName="rc_paypalpayment" behavior="0" />
+      <RootComponent type="20" id="{1e923a70-c4dc-f111-84e8-70a8a5afd538}" behavior="0" />
+      <RootComponent type="29" id="{28c6ef24-2bdd-f111-84e8-70a8a5afd538}" behavior="0" />
+      <RootComponent type="29" id="{2dc9dd52-d8dc-f111-84e8-7ced8d6f2f55}" behavior="0" />
+      <RootComponent type="29" id="{83155a68-d1dc-f111-84e8-00224808e754}" behavior="0" />
+      <RootComponent type="29" id="{b0d07011-dedc-f111-84e8-70a8a5afd538}" behavior="0" />
+      <RootComponent type="372" id="{fbca983e-17dc-f111-84e8-7ced8d6f2f55}" schemaName="new_collecta-20paypal-20sandbox" behavior="0" />
+    </RootComponents>
+    <MissingDependencies>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="1" schemaName="invoice" displayName="Invoice" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="2" schemaName="rc_paypalamountdue" displayName="PayPal Amount Due" parentSchemaName="invoice" parentDisplayName="Invoice" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="2" schemaName="rc_paypalamountdue_base" displayName="PayPal Amount Due (Base)" parentSchemaName="invoice" parentDisplayName="Invoice" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="2" schemaName="rc_paypalamountpaid" displayName="PayPal Amount Paid" parentSchemaName="invoice" parentDisplayName="Invoice" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="2" schemaName="rc_paypalamountpaid_base" displayName="PayPal Amount Paid (Base)" parentSchemaName="invoice" parentDisplayName="Invoice" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="2" schemaName="rc_paypalinvoiceid" displayName="PayPal Invoice ID" parentSchemaName="invoice" parentDisplayName="Invoice" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="2" schemaName="rc_paypalpaymenturl" displayName="PayPal Payment URL" parentSchemaName="invoice" parentDisplayName="Invoice" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="2" schemaName="rc_paypalsenton" displayName="PayPal Sent On" parentSchemaName="invoice" parentDisplayName="Invoice" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="2" schemaName="rc_paypalstatus" displayName="PayPal Status" parentSchemaName="invoice" parentDisplayName="Invoice" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="PayPal Invoices" displayName="PayPal Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{bef68a2e-c5dc-f111-84e8-7ced8d6f2f55}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="29" displayName="Bill invoice in PayPal" id="{28c6ef24-2bdd-f111-84e8-70a8a5afd538}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="29" displayName="Get unpaid invoices" id="{2dc9dd52-d8dc-f111-84e8-7ced8d6f2f55}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="29" displayName="Collecta - PayPal webhook sync" id="{83155a68-d1dc-f111-84e8-00224808e754}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoice" displayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="29" displayName="Preview invoice" id="{b0d07011-dedc-f111-84e8-70a8a5afd538}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="1" schemaName="invoicedetail" displayName="Invoice Product" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="billto_composite" displayName="Bill To Address" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="customerid" displayName="Customer" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="PayPal Invoices" displayName="PayPal Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{bef68a2e-c5dc-f111-84e8-7ced8d6f2f55}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="customerid" displayName="Customer" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="Quick Find All Invoices" displayName="Quick Find All Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{d9edb139-4e86-49de-9846-bd5dd64caec4}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="customerid" displayName="Customer" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="datedelivered" displayName="Date Delivered" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="description" displayName="Description" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="discountamount" displayName="Invoice Discount Amount" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="discountpercentage" displayName="Invoice Discount (%)" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="duedate" displayName="Due Date" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="PayPal Invoices" displayName="PayPal Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{bef68a2e-c5dc-f111-84e8-7ced8d6f2f55}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="duedate" displayName="Due Date" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="freightamount" displayName="Freight Amount" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="invoiceid" displayName="Invoice" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="PayPal Invoices" displayName="PayPal Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{bef68a2e-c5dc-f111-84e8-7ced8d6f2f55}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="invoiceid" displayName="Invoice" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="Quick Find All Invoices" displayName="Quick Find All Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{d9edb139-4e86-49de-9846-bd5dd64caec4}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="invoicenumber" displayName="Invoice ID" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ispricelocked" displayName="Prices Locked" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="name" displayName="Name" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="10" schemaName="rc_invoice_rc_paypalpayment" displayName="rc_invoice_rc_paypalpayment" parentSchemaName="invoice" parentDisplayName="Invoice" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="name" displayName="Name" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="PayPal Invoices" displayName="PayPal Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{bef68a2e-c5dc-f111-84e8-7ced8d6f2f55}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="name" displayName="Name" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="Quick Find All Invoices" displayName="Quick Find All Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{d9edb139-4e86-49de-9846-bd5dd64caec4}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="name" displayName="Name" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="opportunityid" displayName="Opportunity" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="ownerid" displayName="Owner" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="parentbundleidref" displayName="Parent bundle product" parentSchemaName="invoicedetail" parentDisplayName="Invoice Product" solution="msdynce_SalesPatch (9.0.1904.3002)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="paymenttermscode" displayName="Payment Terms" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="pricelevelid" displayName="Price List" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="salesorderid" displayName="Order" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="shippingmethodcode" displayName="Shipping Method" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="shipto_composite" displayName="Ship To Address" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="statecode" displayName="Status" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="statuscode" displayName="Status Reason" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="Quick Find All Invoices" displayName="Quick Find All Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{d9edb139-4e86-49de-9846-bd5dd64caec4}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="statuscode" displayName="Status Reason" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="totalamount" displayName="Total Amount" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="PayPal Invoices" displayName="PayPal Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{bef68a2e-c5dc-f111-84e8-7ced8d6f2f55}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="totalamount" displayName="Total Amount" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="Quick Find All Invoices" displayName="Quick Find All Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{d9edb139-4e86-49de-9846-bd5dd64caec4}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="totalamount" displayName="Total Amount" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="totalamountlessfreight" displayName="Total Pre-Freight Amount" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="totallineitemamount" displayName="Total Detail Amount" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="totaltax" displayName="Total Tax" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="transactioncurrencyid" displayName="Currency" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="2" schemaName="willcall" displayName="Ship To" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Invoice Product Inline Edit View" displayName="Invoice Product Inline Edit View" parentSchemaName="invoicedetail" parentDisplayName="Invoice Product" solution="msdynce_Sales (9.0.4.0076)" id="{a1faa578-24af-4ed6-b36d-47842e7e9b1e}">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Invoice Product Inline Edit View: Bundle Products" displayName="Invoice Product Inline Edit View: Bundle Products" parentSchemaName="invoicedetail" parentDisplayName="Invoice Product" solution="msdynce_SalesPatch (9.0.1904.3002)" id="{3c16727c-9bda-4a84-84c6-94cf2f50840e}">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="26" schemaName="Quick Find All Invoices" displayName="Quick Find All Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)" id="{d9edb139-4e86-49de-9846-bd5dd64caec4}">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="26" schemaName="Quick Find All Invoices" displayName="Quick Find All Invoices" parentSchemaName="invoice" parentDisplayName="Invoice" id="{d9edb139-4e86-49de-9846-bd5dd64caec4}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="60" displayName="Invoice" parentDisplayName="Invoice" solution="msdynce_Sales (9.0.4.0076)" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}">
+          <package appName="msdynce_Sales" version="9.0.26092.10001">msdynce_SalesAnchor (9.0.26092.10001)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+      <MissingDependency>
+        <Required type="66" schemaName="MscrmControls.Grid.GridControl" displayName="MscrmControls.Grid.GridControl" solution="BaseCustomControlsCore (9.0.2609.4005)">
+          <package appName="Base Custom Controls" version="9.0.2609.4005">BaseCustomControlsCore (9.0.2609.4005)</package>
+        </Required>
+        <Dependent type="60" displayName="Invoice" parentDisplayName="Invoice" id="{c9f7c8e8-324f-4ae4-9927-14efcba20d08}" />
+      </MissingDependency>
+    </MissingDependencies>
+  </SolutionManifest>
+</ImportExportXml>

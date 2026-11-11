@@ -1,0 +1,153 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_commondataserviceforapps": {
+        "api": {
+          "name": "shared_commondataserviceforapps"
+        },
+        "connection": {
+          "connectionReferenceLogicalName": "rc_sharedcommondataserviceforapps_a9876"
+        },
+        "runtimeSource": "embedded"
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        },
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        }
+      },
+      "triggers": {
+        "manual": {
+          "type": "Request",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "description": "Customer (account) name, for example Acme Corp",
+                  "title": "customerName",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "text_1": {
+                  "description": "Optional. Part of the invoice name, for example October. Leave empty if not specified.",
+                  "title": "invoiceName",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "required": [
+                "text",
+                "text_1"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "b8f61c18-7224-4f8a-9c5f-72fbce5df764"
+          }
+        }
+      },
+      "actions": {
+        "Respond_to_the_agent": {
+          "type": "Response",
+          "kind": "Skills",
+          "inputs": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "invoices": {
+                  "title": "invoices",
+                  "description": "",
+                  "type": "string",
+                  "x-ms-content-hint": "TEXT",
+                  "x-ms-dynamically-added": true
+                },
+                "count": {
+                  "title": "count",
+                  "description": "",
+                  "type": "number",
+                  "x-ms-content-hint": "NUMBER",
+                  "x-ms-dynamically-added": true
+                }
+              },
+              "additionalProperties": {}
+            },
+            "statusCode": 200,
+            "body": {
+              "invoices": "@{string(body('Shape_invoice_preview'))}",
+              "count": "@length(body('Shape_invoice_preview'))"
+            }
+          },
+          "runAfter": {
+            "Shape_invoice_preview": [
+              "SUCCEEDED"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "81c94f73-dd52-465c-ad3b-a4686da63cc3"
+          }
+        },
+        "Find_invoice_to_bill": {
+          "type": "OpenApiConnection",
+          "inputs": {
+            "parameters": {
+              "entityName": "invoices",
+              "$select": "     invoiceid,name,invoicenumber,totalamount,duedate,rc_paypalinvoiceid,rc_paypalstatus,_customerid_value",
+              "$filter": "statecode eq 0 and contains(customerid_account/name,'@{triggerBody()?['text']}') and contains(name,'@{triggerBody()?['text_1']}')",
+              "$top": 5,
+              "$expand": "invoice_details($select=productdescription,quantity,priceperunit,extendedamount),customerid_account($select=name,emailaddress1)"
+            },
+            "host": {
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+              "operationId": "ListRecords",
+              "connectionName": "shared_commondataserviceforapps"
+            }
+          },
+          "runAfter": {}
+        },
+        "Shape_invoice_preview": {
+          "type": "Select",
+          "inputs": {
+            "from": "@outputs('Find_invoice_to_bill')?['body/value']",
+            "select": {
+              "invoiceId": "@{item()?['invoiceid']}",
+              "invoice": "@{item()?['name']}",
+              "invoiceNumber": "@{item()?['invoicenumber']}",
+              "customer": "@{item()?['customerid_account']?['name']}",
+              "customerEmail": "@{item()?['customerid_account']?['emailaddress1']}",
+              "total": "@item()?['totalamount']",
+              "dueDate": "@{item()?['duedate']}",
+              "alreadySentToPayPal": "@not(empty(item()?['rc_paypalinvoiceid']))",
+              "paypalInvoiceId": "@{item()?['rc_paypalinvoiceid']}",
+              "paypalStatus": "@{item()?['rc_paypalstatus@OData.Community.Display.V1.FormattedValue']}",
+              "lines": "@item()?['invoice_details']"
+            }
+          },
+          "runAfter": {
+            "Find_invoice_to_bill": [
+              "SUCCEEDED"
+            ]
+          }
+        }
+      },
+      "outputs": {},
+      "description": "When an agent calls the flow and send back a response.",
+      "metadata": {
+        "defaultToEmbeddedConnections": true
+      }
+    },
+    "templateName": null
+  },
+  "schemaVersion": "1.0.0.0"
+}

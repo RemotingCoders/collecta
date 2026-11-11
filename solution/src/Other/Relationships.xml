@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EntityRelationships xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EntityRelationship Name="business_unit_rc_paypalpayment" />
+  <EntityRelationship Name="lk_rc_paypalpayment_createdby" />
+  <EntityRelationship Name="lk_rc_paypalpayment_modifiedby" />
+  <EntityRelationship Name="owner_rc_paypalpayment" />
+  <EntityRelationship Name="rc_invoice_rc_paypalpayment" />
+  <EntityRelationship Name="team_rc_paypalpayment" />
+  <EntityRelationship Name="TransactionCurrency_rc_paypalpayment" />
+  <EntityRelationship Name="user_rc_paypalpayment" />
+</EntityRelationships>

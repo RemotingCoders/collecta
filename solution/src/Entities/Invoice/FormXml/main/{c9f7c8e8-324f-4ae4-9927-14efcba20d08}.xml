@@ -1,0 +1,302 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{c9f7c8e8-324f-4ae4-9927-14efcba20d08}</formid>
+    <IntroducedVersion>6.0.0.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab name="Summary_tab" verticallayout="true" id="{757B3D5B-D0A3-424B-9BD6-75C4BC0BDE4D}" IsUserDefined="0" expanded="true" showlabel="true" locklevel="0" ordinalvalue="0">
+          <columns>
+            <column width="21%" id="0">
+              <sections>
+                <section name="invoice information" showlabel="false" showbar="false" id="{EA8FB778-2F5A-40EA-B9C2-43F7ACF55F12}" IsUserDefined="0" columns="1" locklevel="0" labelwidth="115" celllabelalignment="Left" celllabelposition="Left" ordinalvalue="0">
+                  <rows>
+                    <row>
+                      <cell id="{CD6EA58D-B00F-44CF-B7C6-0FA403D1749E}" colspan="1" ordinalvalue="10000">
+                        <labels>
+                          <label description="Invoice ID" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{4283BF7E-2312-4A30-9D8F-A06973E56021}" colspan="1" ordinalvalue="10001">
+                        <labels>
+                          <label description="Name" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{66D97844-0609-4FD6-8F41-DAACA37CB19B}" colspan="1" ordinalvalue="10002">
+                        <labels>
+                          <label description="Currency" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{08578784-1379-41DF-B47E-8938A8FA303D}" colspan="1" ordinalvalue="10003">
+                        <labels>
+                          <label description="Price List" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell auto="false" showlabel="true" locklevel="0" id="{2C79C0C5-F06D-4D51-9DF9-3F6330B58886}" colspan="1" ordinalvalue="10004">
+                        <labels>
+                          <label description="Prices Locked" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="dates" showlabel="true" showbar="false" locklevel="0" id="{92BFB92B-B6A4-4B6E-8488-9766B35C4278}" IsUserDefined="0" layout="varheight" ordinalvalue="1">
+                  <rows>
+                    <row>
+                      <cell auto="false" showlabel="true" locklevel="0" rowspan="1" colspan="1" id="{CA059BD5-6DBE-4026-B187-4B54B46582FD}" ordinalvalue="10000">
+                        <labels>
+                          <label description="Date Delivered" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell auto="false" showlabel="true" locklevel="0" rowspan="1" colspan="1" id="{A3D78A94-4B6B-46FA-99DA-34021EAC92AD}" ordinalvalue="10001">
+                        <labels>
+                          <label description="Due Date" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="shipping information" showlabel="true" showbar="false" id="{92F45E77-067C-489E-BF60-82E00A2F10C7}" IsUserDefined="0" columns="1" locklevel="0" labelwidth="115" celllabelalignment="Left" celllabelposition="Left" ordinalvalue="2">
+                  <rows>
+                    <row>
+                      <cell id="{F7A7A615-426E-49D4-9233-084A723CC67F}" ordinalvalue="10000">
+                        <labels>
+                          <label description="Shipping Method" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{B57686FA-E5DA-4361-8F9F-BF8A67CB3BAA}" ordinalvalue="10001">
+                        <labels>
+                          <label description="Payment Terms" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="addresses" showlabel="true" showbar="false" id="{A25A5B4F-1C2D-460C-8588-AC3C040FF17A}" IsUserDefined="0" ordinalvalue="3">
+                  <rows>
+                    <row>
+                      <cell id="{eaecc73c-e400-a099-e814-c8078c4d6ac5}" showlabel="true" ordinalvalue="10000">
+                        <labels>
+                          <label description="Bill To Address" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{43B685D3-2413-4233-A878-C1A274B7CAEB}" showlabel="true" ordinalvalue="10001">
+                        <labels>
+                          <label description="Ship To" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{C7FD6CF0-6E6A-49A5-9B07-63BEF77B8004}" showlabel="true" ordinalvalue="10002">
+                        <labels>
+                          <label description="Ship To Address" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="53%" id="1">
+              <sections>
+                <section name="totals" labelwidth="250" showlabel="false" showbar="false" id="{C1AB0767-5D3B-4BB2-A5F6-EDBB5FC85B3B}" IsUserDefined="0" ordinalvalue="3">
+                  <rows>
+                    <row>
+                      <cell id="{48C0E9CF-700A-4372-9E6F-53926E6C261A}" ordinalvalue="10006">
+                        <labels>
+                          <label description="Total Amount" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="26%" id="2">
+              <sections>
+                <section name="sales_information" showlabel="true" showbar="false" id="{20F1851C-D370-4E68-944A-8E611708B095}" IsUserDefined="0" ordinalvalue="0">
+                  <rows>
+                    <row>
+                      <cell id="{DC8C8A76-28E3-44F8-B222-7317802567F6}" ordinalvalue="10000">
+                        <labels>
+                          <label description="Opportunity" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{A80671A2-0615-4DF9-95F8-C3D692DB529F}" ordinalvalue="10001">
+                        <labels>
+                          <label description="Order" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{406bdc8b-b41b-8c76-c718-a81dc5504e22}" showlabel="true" locklevel="0" ordinalvalue="10002">
+                        <labels>
+                          <label description="Customer" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="description_section" showlabel="false" showbar="false" locklevel="0" id="{30e13218-a053-2acc-248d-030a722114d4}" IsUserDefined="0" layout="varwidth" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Top" ordinalvalue="1">
+                  <rows>
+                    <row>
+                      <cell id="{55601b4d-1468-29b7-0c5a-c46934678e59}" showlabel="true" locklevel="0" rowspan="12" ordinalvalue="10000">
+                        <labels>
+                          <label description="Description" languagecode="1033" solutionaction="Modified" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab name="tab_paypal" id="{76F1DE86-877C-4E02-81EA-5AA7C7EA11E6}" IsUserDefined="1" locklevel="0" showlabel="true" expanded="true" ordinalvalue="2" solutionaction="Added">
+          <labels>
+            <label description="PayPal" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%" id="0">
+              <sections>
+                <section name="section_paypal" showlabel="true" showbar="false" locklevel="0" id="{290E3006-6289-4CD5-BFAE-71F330650864}" IsUserDefined="0" layout="varwidth" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left" ordinalvalue="0">
+                  <labels>
+                    <label description="PayPal" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{C87BE520-F81C-4CF5-9B28-5A6145B26B50}" showlabel="true" locklevel="0" ordinalvalue="10000">
+                        <labels>
+                          <label description="PayPal Status" languagecode="1033" />
+                        </labels>
+                        <control id="rc_paypalstatus" classid="{3EF39988-22BB-4f0b-BBBE-64B5A3748AEE}" datafieldname="rc_paypalstatus" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{C0F40C66-C428-4C2D-BD7C-5519C59A48E7}" showlabel="true" locklevel="0" ordinalvalue="10001">
+                        <labels>
+                          <label description="PayPal Invoice ID" languagecode="1033" />
+                        </labels>
+                        <control id="rc_paypalinvoiceid" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="rc_paypalinvoiceid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{FA58DD4E-DECB-40A1-98B3-36B4719E2C59}" showlabel="true" locklevel="0" ordinalvalue="10002">
+                        <labels>
+                          <label description="PayPal Payment URL" languagecode="1033" />
+                        </labels>
+                        <control id="rc_paypalpaymenturl" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="rc_paypalpaymenturl" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{E345A915-A41B-4BE2-A02D-1B53F48CBC77}" showlabel="true" locklevel="0" ordinalvalue="10003">
+                        <labels>
+                          <label description="PayPal Sent On" languagecode="1033" />
+                        </labels>
+                        <control id="rc_paypalsenton" classid="{5B773807-9FB2-42db-97C3-7A91EFF8ADFF}" datafieldname="rc_paypalsenton" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{C5393387-A70F-408E-8E5C-12062FE8A0A4}" showlabel="true" locklevel="0" ordinalvalue="10004">
+                        <labels>
+                          <label description="PayPal Amount Paid" languagecode="1033" />
+                        </labels>
+                        <control id="rc_paypalamountpaid" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="rc_paypalamountpaid" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{ECCB4166-DB35-4C0D-B4C6-0A7192E987AC}" showlabel="true" locklevel="0" ordinalvalue="10005">
+                        <labels>
+                          <label description="PayPal Amount Due" languagecode="1033" />
+                        </labels>
+                        <control id="rc_paypalamountdue" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="rc_paypalamountdue" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="section_paypal_payments" showlabel="true" showbar="false" locklevel="0" id="{1F7156D9-3352-4418-9438-F7CC2F1998FA}" IsUserDefined="0" layout="varwidth" columns="1" labelwidth="115" celllabelalignment="Left" celllabelposition="Left" ordinalvalue="1">
+                  <labels>
+                    <label description="PayPal Payments" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{D739340A-F833-4695-B68D-C3582218B6FA}" showlabel="true" rowspan="8" colspan="1" auto="false" ordinalvalue="10000">
+                        <labels>
+                          <label description="PayPal Payments" languagecode="1033" />
+                        </labels>
+                        <control id="PayPalPayments" classid="{E7A81278-8635-4d9e-8D4D-59480B391C5B}" indicationOfSubgrid="true" uniqueid="{E787B5DB-2A95-4BF8-95BD-50E97ADAE81B}">
+                          <parameters>
+                            <ViewId>{45F8C706-3746-46D2-8A38-8B3E5FEC034C}</ViewId>
+                            <IsUserView>false</IsUserView>
+                            <RelationshipName>rc_invoice_rc_paypalpayment</RelationshipName>
+                            <TargetEntityType>rc_paypalpayment</TargetEntityType>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <ViewIds>{45F8C706-3746-46D2-8A38-8B3E5FEC034C}</ViewIds>
+                            <EnableChartPicker>false</EnableChartPicker>
+                            <RecordsPerPage>10</RecordsPerPage>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{A012A628-3E4D-4353-9EB6-49819976EED8}" columns="1111" celllabelposition="Top" labelwidth="115">
+        <rows>
+          <row>
+            <cell id="{75FDA98F-0174-446A-A8D9-D317699FFCAE}" showlabel="true" ordinalvalue="10000">
+              <labels>
+                <label description="Total Amount" languagecode="1033" solutionaction="Modified" />
+              </labels>
+            </cell>
+            <cell id="{76F7993A-5EA5-44EA-8C49-C4A61C9BC913}" showlabel="true" ordinalvalue="20001">
+              <labels>
+                <label description="Status" languagecode="1033" solutionaction="Modified" />
+              </labels>
+            </cell>
+            <cell id="{9660C08D-CE00-4408-A33C-DD21BBB7EF13}" showlabel="true" ordinalvalue="30002">
+              <labels>
+                <label description="Status Reason" languagecode="1033" solutionaction="Modified" />
+              </labels>
+            </cell>
+            <cell id="{CC425E50-B877-43C5-9E0D-FF00EC56A1EE}" showlabel="true" locklevel="1" ordinalvalue="40003">
+              <labels>
+                <label description="Owner" languagecode="1033" solutionaction="Modified" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </header>
+    </form>
+    <LocalizedNames>
+      <LocalizedName description="Invoice" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="Updated default Invoice form." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>

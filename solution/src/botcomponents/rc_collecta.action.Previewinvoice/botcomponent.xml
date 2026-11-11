@@ -1,0 +1,10 @@
+<botcomponent schemaname="rc_collecta.action.Previewinvoice">
+  <componenttype>9</componenttype>
+  <iscustomizable>0</iscustomizable>
+  <name>Preview invoice</name>
+  <parentbotid>
+    <schemaname>rc_collecta</schemaname>
+  </parentbotid>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+</botcomponent>
