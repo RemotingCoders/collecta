@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Connector xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <connectorid>fbca983e-17dc-f111-84e8-7ced8d6f2f55</connectorid>
-  <description></description>
+  <description>Collecta lets a collections agent work with the PayPal sandbox: create, send, remind and cancel invoices, create and capture checkout orders, send payouts and list account transactions to reconcile payments.</description>
   <displayname>Collecta PayPal Sandbox</displayname>
   <iconbrandcolor>#003087</iconbrandcolor>
   <name>new_collecta-20paypal-20sandbox</name>
@@ -11,4 +11,5 @@
   <connectionparameters>/Connector/new_collecta-20paypal-20sandbox_connectionparameters.json</connectionparameters>
   <policytemplateinstances>/Connector/new_collecta-20paypal-20sandbox_policytemplateinstances.json</policytemplateinstances>
   <customcodeblobcontent>/Connector/new_collecta-20paypal-20sandbox_customcodeblobcontent.csx</customcodeblobcontent>
+  <iconblob>/Connector/new_collecta-20paypal-20sandbox_iconblob.Png</iconblob>
 </Connector>

@@ -17,6 +17,7 @@ shows typed dynamic content.
 | `apiDefinition.swagger.json` | OpenAPI 2.0 (Swagger) definition: 14 operations with request and response schemas. |
 | `apiProperties.json` | Connection parameters (Client ID / Secret), brand color, and the operations that run the custom code. |
 | `script.csx` | Custom code that turns the connection's Client ID / Secret into a PayPal OAuth bearer token. |
+| `icon.png` | Connector icon (144 x 144 PNG), the same one the Collecta solution carries. |
 
 ## How authentication works
 
