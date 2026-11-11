@@ -10,7 +10,7 @@ Fabrikam", and Collecta reads the invoices in Dynamics 365, creates and sends th
 late ones with PayPal reminders and keeps the CRM in sync with what PayPal reports. Dynamics 365 is the system
 of record for customers and invoices; PayPal is the source of truth for payments.
 
-Built for the PayPal hackathon by Remoting Coders. Everything runs against the **PayPal sandbox**.
+Built for the PayPal AI Hackathon by Damián Sinay and María Soledad Barrientos. Everything runs against the **PayPal sandbox**.
 
 ## Architecture
 
