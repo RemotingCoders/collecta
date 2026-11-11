@@ -1,3 +1,5 @@
+<p align="center"><img src="docs/collecta-icon-512.png" alt="Collecta logo" width="160"></p>
+
 # Collecta
 
 **AI collections agent for Dynamics 365 Sales, powered by PayPal.**
