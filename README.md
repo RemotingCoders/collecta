@@ -113,16 +113,18 @@ A user who talks to Collecta from Sales Hub needs:
   nothing. Amounts are copied from PayPal, never added up locally.
 - **Connections in the demo belong to the maker.** The agent tools and the flows run with the connections of
   the account that built them (connection references mapped at import). That is fine for a hackathon demo
-  with one sandbox merchant. In production the PayPal connection should be per user (each seller creates their
-  own connection to the connector) or a dedicated service principal, and the agent should run its Dataverse
-  tools with the user's own connection so Dataverse security roles apply.
+  with one sandbox merchant. The PayPal account belongs to the merchant, so in production the PayPal
+  connection should be a single merchant-level service credential (secrets in Azure Key Vault, owned by a
+  service account or service principal), not per seller. The agent's Dataverse tools should run with the end
+  user's own connection so Dataverse security roles apply.
 - **No secrets in the repository.** PayPal credentials live in the connection and in a local `.env` that is
   git-ignored; the exported solution contains the definition of the connection parameters, not their values,
   and no flow trigger URL. The seed's token cache is git-ignored too.
-- **Webhook endpoint.** The flow trigger is an HTTP endpoint protected by the signature in its URL. A next step
-  is to call PayPal's `POST /v1/notifications/verify-webhook-signature` with the transmission headers at the
-  start of the flow and reject events that do not verify, and to filter on the `event_type` values the flow
-  understands.
+- **Webhook endpoint.** The flow trigger is an HTTP endpoint protected by the signature in its URL. Because the
+  flow never trusts the payload (it only uses the invoice ID to re-fetch the invoice from PayPal) and all writes
+  are idempotent, a forged or replayed call can at most trigger a harmless resync: it cannot mark anything as
+  paid unless PayPal says so. Verifying the PayPal signature (`POST /v1/notifications/verify-webhook-signature`)
+  and filtering on known `event_type` values are planned as defense in depth.
 - **Confirmation before money moves.** The agent instructions require a summary and an explicit "yes" before
   billing or sending reminders, refuse to bill an invoice that already has a PayPal invoice ID, and never invent
   amounts, dates or emails.
