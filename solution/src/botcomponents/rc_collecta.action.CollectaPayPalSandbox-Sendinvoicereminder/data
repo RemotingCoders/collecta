@@ -8,7 +8,7 @@ action:
   kind: InvokeConnectorTaskAction
   connectionReference: rc_collecta.shared_new-5fcollecta-20paypal-20sandbox-5f39d8a180f3ea32ab.shared-new-5fcollect-f29102f2-11fb-4349-8bdd-55f593bde263
   connectionProperties:
-    mode: Invoker
+    mode: Maker
 
   operationId: RemindInvoice
 

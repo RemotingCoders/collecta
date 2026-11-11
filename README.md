@@ -127,7 +127,9 @@ A user who talks to Collecta from Sales Hub needs:
   and filtering on known `event_type` values are planned as defense in depth.
 - **Confirmation before money moves.** The agent instructions require a summary and an explicit "yes" before
   billing or sending reminders, refuse to bill an invoice that already has a PayPal invoice ID, and never invent
-  amounts, dates or emails.
+  amounts, dates or emails. Confirmation is enforced in the agent instructions with a two-turn rule (the action
+  is never executed in the same turn it is proposed); Copilot Studio's built-in tool confirmation card is not
+  used because it cannot render when Collecta runs as a connected agent inside Copilot in Dynamics 365 Sales.
 
 ## Testing (for judges)
 
